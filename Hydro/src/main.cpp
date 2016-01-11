@@ -5,7 +5,8 @@
  * \author Alexey Rybakov
  */
 
-#include <iostream>
+#include "Lib/IO/io.h"
+#include "Grid/Grid.h"
 
 /**
  * \brief Main function (enter point).
@@ -15,7 +16,11 @@
  */
 int main()
 {
-    std::cout << "Hello";
+    Hydro::Grid::Grid *grid_p = new Hydro::Grid::Grid(5);
+
+    cout << grid_p;
+
+    delete grid_p;
 
     return 0;
 }

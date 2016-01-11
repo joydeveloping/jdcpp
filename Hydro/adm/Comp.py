@@ -38,6 +38,9 @@ def Print_Help():
 # Get argument.
 assert(len(sys.argv) == 2)
 arg = sys.argv[1]
+
+# Compilation parameters.
+srcs = "./src/*.cpp ./src/Grid/*.cpp ./src/Lib/IO/*.cpp"
 cmds = []
 
 # Analyze argument.
@@ -45,7 +48,7 @@ if (arg == "-h"):
     Print_Help()
 elif (arg == "local"):
     cmds = ["rm -rf ./bin/*.out",
-            "mpic++ ./src/*.cpp ./src/Grid/*.cpp -o ./bin/hydro.out"]
+            "mpic++ -DDEBUG " + srcs + " -I./src -o ./bin/hydro.out"]
 elif (arg == "mvs"):
     assert(False)
 else:
