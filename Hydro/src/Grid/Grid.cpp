@@ -64,7 +64,7 @@ void Grid::Deallocate_Blocks()
     {
         Block *p = Get_Block(i);
 
-        if (p)
+        if (p != NULL)
         {
             delete p;
         }
@@ -76,7 +76,7 @@ void Grid::Deallocate_Blocks()
  */
 void Grid::Deallocate_Blocks_Pointers()
 {
-    if (Blocks_p_)
+    if (Blocks_p_ != NULL)
     {
         delete Blocks_p_;
         Blocks_p_ = NULL;
@@ -140,6 +140,17 @@ bool Grid::Load_GEOM(const string name,
     // Blocks balancing.
     Set_Blocks_Ranks_Cells_Balancing(ranks_count);
 
+    // Allocate memory for blocks.
+    for (int i = 0; i < blocks_count; i++)
+    {
+        Block *p = Get_Block(i);
+
+        if (p->Is_Active())
+        {
+            p->Allocate_Memory();
+        }
+    }
+
     // Close files.
     file_pfg.close();
     file_ibc.close();
@@ -168,7 +179,7 @@ ostream &operator<<(ostream &os,
     {
         Block *p = grid_p->Get_Block(i);
 
-        if (p)
+        if (p != NULL)
         {
             os << p;
         }
