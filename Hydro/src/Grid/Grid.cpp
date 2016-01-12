@@ -5,8 +5,10 @@
  * \author Alexey Rybakov
  */
 
-#include "Grid.h"
 #include <fstream>
+#include <cassert>
+#include "mpi.h"
+#include "Grid.h"
 
 namespace Hydro { namespace Grid {
 
@@ -422,14 +424,40 @@ void Grid::Set_Blocks_Ranks_Cells_Balancing(int ranks_count)
  */
 void Grid::Calculate_Iteration()
 {
-    // TODO:
-    // Set interface buffers (for possibility of checking).
+    // Set predefined values to buffers.
+    for (int i = 0; i < Ifaces_Count(); i++)
+    {
+        Iface *p = Get_Iface(i);
+
+        if (p->Is_MPI())
+        {
+            if (p->Is_BActive())
+            {
+                p->Set_Buffer_Value(0.0);
+            }
+            else
+            {
+                p->Set_Buffer_Value(1.0);
+            }
+        }
+    }
 
     // TODO:
     // Hydrodynamic calculations.
 
-    // TODO:
-    // Check MPI transfers.
+    // Check buffers.
+    for (int i = 0; i < Ifaces_Count(); i++)
+    {
+        Iface *p = Get_Iface(i);
+
+        if (p->Is_MPI())
+        {
+            if (p->Is_BActive())
+            {
+                assert(p->Check_Buffer_Value(1.0, 0.001));
+            }
+        }
+    }
 }
 
 /**
@@ -442,6 +470,63 @@ void Grid::Calculate_Iterations(int n)
     for (int i = 0; i < n; i++)
     {
         Calculate_Iteration();
+    }
+}
+
+/**
+ * \brief MPI data exchange for interfaces.
+ */
+void Grid::Ifaces_MPI_Data_Exchange()
+{
+    MPI_Request reqs[100];
+    MPI_Status stats[100];
+    int reqs_count = 0;
+    int i = 0;
+
+    // Process all interfaces.
+    while (i < Ifaces_Count())
+    {
+        Iface *p = Get_Iface(i);
+
+        if (p->Is_BActive())
+        {
+            if (p->Is_NActive())
+            {
+                // Both blocks are active.
+                // We can replace data without MPI.
+
+                i += 2;
+            }
+            else
+            {
+                // Self block is active, neighbour is not.
+                // We have to receive data from neighbour block process.
+
+                MPI_Irecv(p->MPI_Buffer(), p->Buffer_Floats_Count(), MPI_FLOAT,
+                          p->NB()->Rank(), p->Id(), MPI_COMM_WORLD, &reqs[reqs_count++]);
+                i++;
+            }
+        }
+        else
+        {
+            if (p->Is_NActive())
+            {
+                // Neighbour block is active, self is not.
+                // We have to send data to self block process.
+                MPI_Isend(p->MPI_Buffer(), p->Buffer_Floats_Count(), MPI_FLOAT,
+                          p->B()->Rank(), p->Id(), MPI_COMM_WORLD, &reqs[reqs_count++]);
+                i++;
+            }
+            else
+            {
+                // Self and neighbour blocks are not active.
+                // Nothing to do.
+                i += 2;
+            }
+        }
+
+        // Wait all requests.
+        MPI_Waitall(reqs_count, reqs, stats);
     }
 }
 

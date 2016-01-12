@@ -6,6 +6,7 @@
  */
 
 #include <cassert>
+#include <cmath>
 #include "mpi.h"
 #include "Iface.h"
 #include "configure.h"
@@ -77,7 +78,7 @@ Iface::~Iface()
 bool Iface::Allocate_Buffer()
 {
     Deallocate_Buffer();
-    Buffer_p_ = new float[Buffer_Cells_Count()];
+    Buffer_p_ = new float[Buffer_Floats_Count()];
 
     return Buffer_p_ != NULL;
 }
@@ -183,8 +184,51 @@ ostream &operator<<(ostream &os,
              << setw(5) << p->K0() << ","
              << setw(5) << p->K1() << "] -> "
              << setw(3) << p->NB()->Id() << ", m["
-             << setw(8) << p->Buffer_Cells_Count() << "]" << endl;
+             << setw(8) << p->Buffer_Bytes_Count() << "]" << endl;
     }
+}
+
+/*
+ * Additional functions.
+ */
+
+/**
+ * \brief Set buffer with single value v.
+ *
+ * \param[in] v - value
+ */
+void Iface::Set_Buffer_Value(float v)
+{
+    int n = Buffer_Floats_Count();
+
+    for (int i = 0; i < n; i++)
+    {
+        Buffer_p_[i] = v;
+    }
+}
+
+/**
+ * \brief Check if all values in buffer are equal to given value.
+ *
+ * \return
+ * true - if all values in buffer are equal to given value,
+ * false - if not all values in buffer are equal to given value.
+ */
+bool Iface::Check_Buffer_Value(float v, float eps)
+{
+    int n = Buffer_Floats_Count();
+
+    for (int i = 0; i < n; i++)
+    {
+        float b = Buffer_p_[i];
+
+        if (fabs(b - v) > eps)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 } }

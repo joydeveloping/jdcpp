@@ -70,6 +70,9 @@ private:
 
     // Load functions.
     bool Load_GEOM_Ifaces(ifstream &s);
+
+    // Some help functions for iteration.
+    void Ifaces_MPI_Data_Exchange();
 };
 
 // Print information.

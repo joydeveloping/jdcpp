@@ -9,6 +9,7 @@
 #define HYDRO_GRID_IFACE_H
 
 #include "Block.h"
+#include "configure.h"
 
 namespace Hydro { namespace Grid {
 
@@ -48,6 +49,14 @@ public:
     bool Is_MPI() const;
     int Cells_Count() const;
     int Buffer_Cells_Count() const;
+    int Buffer_Floats_Count() const { return Buffer_Cells_Count()
+                                             * HYDRO_GRID_DYNAMIC_FLOATS_PER_CELL; }
+    int Buffer_Bytes_Count() const { return Buffer_Floats_Count() * sizeof(float); }
+    void *MPI_Buffer() { return static_cast<void *>(Buffer_p_); }
+
+    // Additional functions.
+    void Set_Buffer_Value(float v);
+    bool Check_Buffer_Value(float v, float eps);
 
 private:
 

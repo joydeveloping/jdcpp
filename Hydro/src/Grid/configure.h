@@ -13,5 +13,10 @@
  */
 #define HYDRO_GRID_SHADOW_DEPTH 3
 
+/**
+ * \brief Count of dynamic float values per single cell.
+ */
+#define HYDRO_GRID_DYNAMIC_FLOATS_PER_CELL 9
+
 #endif
 
