@@ -5,6 +5,9 @@
  * \author Alexey Rybakov
  */
 
+#ifndef HYDRO_GRID_GRID_H
+#define HYDRO_GRID_GRID_H
+
 #include "Iface.h"
 
 namespace Hydro { namespace Grid {
@@ -39,6 +42,10 @@ public:
     void Set_Blocks_Ranks_Circular_Distribution(int ranks_count);
     void Set_Blocks_Ranks_Cells_Balancing(int ranks_count);
 
+    // Calculations.
+    void Calculate_Iteration();
+    void Calculate_Iterations(int n);
+
 private:
 
     // Count of blocks.
@@ -70,4 +77,6 @@ ostream &operator<<(ostream &os,
                     const Grid *grid_p);
 
 } }
+
+#endif
 

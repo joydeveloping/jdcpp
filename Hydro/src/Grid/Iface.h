@@ -5,6 +5,9 @@
  * \author Alexey Rybakov
  */
 
+#ifndef HYDRO_GRID_IFACE_H
+#define HYDRO_GRID_IFACE_H
+
 #include "Block.h"
 
 namespace Hydro { namespace Grid {
@@ -44,6 +47,7 @@ public:
     bool Is_Active() const { return Is_BActive() || Is_NActive(); }
     bool Is_MPI() const;
     int Cells_Count() const;
+    int Buffer_Cells_Count() const;
 
 private:
 
@@ -59,8 +63,12 @@ private:
     // Pointer to neighbour block.
     Block *NB_p_;
 
-    // Bufer.
-    float *Buff_p_;
+    // Buffer.
+    float *Buffer_p_;
+
+    // Allocate/deallocate memory.
+    bool Allocate_Buffer();
+    void Deallocate_Buffer();
 };
 
 // Print information.
@@ -68,4 +76,6 @@ ostream &operator<<(ostream &os,
                     const Iface *p);
 
 } }
+
+#endif
 

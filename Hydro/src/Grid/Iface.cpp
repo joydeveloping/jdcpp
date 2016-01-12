@@ -8,6 +8,7 @@
 #include <cassert>
 #include "mpi.h"
 #include "Iface.h"
+#include "configure.h"
 
 namespace Hydro { namespace Grid {
 
@@ -45,8 +46,13 @@ Iface::Iface(int id,
       J1_(j1),
       K0_(k0),
       K1_(k1),
-      NB_p_(nb_p)
+      NB_p_(nb_p),
+      Buffer_p_(NULL)
 {
+    if (Is_Active())
+    {
+        Allocate_Buffer();
+    }
 }
 
 /**
@@ -54,6 +60,38 @@ Iface::Iface(int id,
  */
 Iface::~Iface()
 {
+    Deallocate_Buffer();
+}
+
+/*
+ * Alocate/deallocate memory.
+ */
+
+/**
+ * \brief Allocate memory for buffer.
+ *
+ * \return
+ * true - if memory is allocated,
+ * false - if memory is not allocated.
+ */
+bool Iface::Allocate_Buffer()
+{
+    Deallocate_Buffer();
+    Buffer_p_ = new float[Buffer_Cells_Count()];
+
+    return Buffer_p_ != NULL;
+}
+
+/**
+ * \brief Deallocate memory.
+ */
+void Iface::Deallocate_Buffer()
+{
+    if (Buffer_p_ != NULL)
+    {
+        delete Buffer_p_;
+        Buffer_p_ = NULL;
+    }
 }
 
 /*
@@ -103,6 +141,23 @@ int Iface::Cells_Count() const
     }
 }
 
+/**
+ * \brief Take buffer cells count.
+ *
+ * \return Buffer cells count.
+ */
+int Iface::Buffer_Cells_Count() const
+{
+    if (Is_Active())
+    {
+        return Cells_Count() * HYDRO_GRID_SHADOW_DEPTH;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 /*
  * Information.
  */
@@ -127,7 +182,8 @@ ostream &operator<<(ostream &os,
              << setw(5) << p->J1() << ","
              << setw(5) << p->K0() << ","
              << setw(5) << p->K1() << "] -> "
-             << setw(3) << p->NB()->Id() << endl;
+             << setw(3) << p->NB()->Id() << ", m["
+             << setw(8) << p->Buffer_Cells_Count() << "]" << endl;
     }
 }
 

@@ -413,5 +413,37 @@ void Grid::Set_Blocks_Ranks_Cells_Balancing(int ranks_count)
     delete ranks_cells;
 }
 
+/*
+ * Calculations.
+ */
+
+/**
+ * \brief Calculate single iteration.
+ */
+void Grid::Calculate_Iteration()
+{
+    // TODO:
+    // Set interface buffers (for possibility of checking).
+
+    // TODO:
+    // Hydrodynamic calculations.
+
+    // TODO:
+    // Check MPI transfers.
+}
+
+/**
+ * \brief Calculate iterations.
+ *
+ * \param[in] n - iterations number
+ */
+void Grid::Calculate_Iterations(int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        Calculate_Iteration();
+    }
+}
+
 } }
 

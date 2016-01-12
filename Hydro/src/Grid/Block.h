@@ -5,6 +5,9 @@
  * \author Alexey Rybakov
  */
 
+#ifndef HYDRO_GRID_BLOCK_H
+#define HYDRO_GRID_BLOCK_H
+
 #include "Lib/IO/io.h"
 
 using namespace std;
@@ -87,4 +90,6 @@ ostream &operator<<(ostream &os,
                     const Block *p);
 
 } }
+
+#endif
 
