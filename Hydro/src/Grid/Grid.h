@@ -5,7 +5,7 @@
  * \author Alexey Rybakov
  */
 
-#include "Block.h"
+#include "Iface.h"
 
 namespace Hydro { namespace Grid {
 
@@ -27,8 +27,10 @@ public:
 
     // Simple data.
     int Blocks_Count() const { return Blocks_Count_; }
+    int Ifaces_Count() const { return Ifaces_Count_; }
     bool Is_Empty() const { return Blocks_Count() == 0; }
     Block *Get_Block(int n) const { return Blocks_p_[n]; }
+    Iface *Get_Iface(int n) const { return Ifaces_p_[n]; }
 
     // Load and create Grid.
     bool Load_GEOM(const string name, int ranks_count);
@@ -45,10 +47,22 @@ private:
     // Blocks.
     Block **Blocks_p_;
 
+    // Count of interfaces.
+    int Ifaces_Count_;
+
+    // Interfaces.
+    Iface **Ifaces_p_;
+
     // Functions for Grid creation.
     bool Allocate_Blocks_Pointers(int count);
     void Deallocate_Blocks();
     void Deallocate_Blocks_Pointers();
+    bool Allocate_Ifaces_Pointers(int count);
+    void Deallocate_Ifaces();
+    void Deallocate_Ifaces_Pointers();
+
+    // Load functions.
+    bool Load_GEOM_Ifaces(ifstream &s);
 };
 
 // Print information.

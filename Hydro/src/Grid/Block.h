@@ -84,7 +84,7 @@ private:
 
 // Print information.
 ostream &operator<<(ostream &os,
-                    const Block *block_p);
+                    const Block *p);
 
 } }
 

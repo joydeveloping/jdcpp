@@ -18,7 +18,8 @@ namespace Hydro { namespace Grid {
  * \brief Default constructor.
  */
 Grid::Grid()
-    : Blocks_Count_(0)
+    : Blocks_Count_(0),
+      Ifaces_Count_(0)
 {
     // Empty grid.
     Blocks_p_ = NULL;
@@ -31,6 +32,8 @@ Grid::~Grid()
 {
     Deallocate_Blocks();
     Deallocate_Blocks_Pointers();
+    Deallocate_Ifaces();
+    Deallocate_Ifaces_Pointers();
 }
 
 /*
@@ -81,6 +84,53 @@ void Grid::Deallocate_Blocks_Pointers()
         delete Blocks_p_;
         Blocks_p_ = NULL;
         Blocks_Count_ = 0;
+    }
+}
+
+/**
+ * \brief Allocate interfaces pointers.
+ *
+ * \param[in] count - count of interfaces
+ *
+ * \return
+ * true - if interfaces pointers are allocated,
+ * false - if interfaces pointers are not allocated.
+ */
+bool Grid::Allocate_Ifaces_Pointers(int count)
+{
+    Deallocate_Ifaces();
+    Ifaces_p_ = new Iface *[count];
+    Ifaces_Count_ = count;
+
+    return Ifaces_p_ != NULL;
+}
+
+/**
+ * \brief Deallocate interfaces.
+ */
+void Grid::Deallocate_Ifaces()
+{
+    for (int i = 0; i < Ifaces_Count(); i++)
+    {
+        Iface *p = Get_Iface(i);
+
+        if (p != NULL)
+        {
+            delete p;
+        }
+    }
+}
+
+/**
+ * \brief Deallocate interfaces pointers.
+ */
+void Grid::Deallocate_Ifaces_Pointers()
+{
+    if (Ifaces_p_ != NULL)
+    {
+        delete Ifaces_p_;
+        Ifaces_p_ = NULL;
+        Ifaces_Count_ = 0;
     }
 }
 
@@ -151,9 +201,89 @@ bool Grid::Load_GEOM(const string name,
         }
     }
 
+    if (!Load_GEOM_Ifaces(file_ibc))
+    {
+        cout << "Err: Interfaces loading failed." << endl;
+    }
+
     // Close files.
     file_pfg.close();
     file_ibc.close();
+
+    return true;
+}
+
+/**
+ * \brief Load Grid interfaces.
+ *
+ * \param[in] s - stream
+ */
+bool Grid::Load_GEOM_Ifaces(ifstream &s)
+{
+    string tmp;
+    int ifaces_count, pos;
+
+    // Pass two strings.
+    getline(s, tmp);
+    getline(s, tmp);
+
+    // Read interfaces count and set up pointers.
+    s >> ifaces_count;
+    Allocate_Ifaces_Pointers(ifaces_count);
+
+    // First set null pointers.
+    for (int i = 0; i < ifaces_count; i++)
+    {
+        Ifaces_p_[i] = NULL;
+    }
+
+    // Read all interfaces.
+    pos = 0;
+    for (int iter = 0; iter < ifaces_count; iter++)
+    {
+        int id, bid, i0, i1, j0, j1, k0, k1, nid;
+
+        // Read interface parameters and create interface.
+        s >> id >> bid >> i0 >> i1 >> j0 >> j1 >> k0 >> k1 >> nid;
+
+        // We are going to write interface to position "pos".
+        // But if there is interface with the same id before,
+        // then we have to write current interface after it.
+
+        // Try to search i.
+        int cur_pos = -1;
+        for (int i = 0; i < ifaces_count; i++)
+        {
+            Iface *p = Get_Iface(i);
+
+            if (p != NULL)
+            {
+                if (p->Id() == id)
+                {
+                    cur_pos = i;
+
+                    break;
+                }
+            }
+        }
+
+        if (cur_pos != -1)
+        {
+            // We have this id before (and we have place for second interface with the same id).
+            cur_pos++;
+        }
+        else
+        {
+            // Use position "pos".
+            cur_pos = pos;
+            pos += 2;
+        }
+
+        Ifaces_p_[cur_pos] = new Iface(id,
+                                       Get_Block(bid - 1),
+                                       i0, i1, j0, j1, k0, k1,
+                                       Get_Block(nid - 1));
+    }
 
     return true;
 }
@@ -171,13 +301,24 @@ bool Grid::Load_GEOM(const string name,
 ostream &operator<<(ostream &os,
                     const Grid *grid_p)
 {
-    int count = grid_p->Blocks_Count();
+    int blocks_count = grid_p->Blocks_Count();
+    int ifaces_count = grid_p->Ifaces_Count();
 
-    os << "Grid(" << count << "):" << endl;
+    os << "Grid(b" << blocks_count << ",i" << ifaces_count << "):" << endl;
 
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < blocks_count; i++)
     {
         Block *p = grid_p->Get_Block(i);
+
+        if (p != NULL)
+        {
+            os << p;
+        }
+    }
+
+    for (int i = 0; i < ifaces_count; i++)
+    {
+        Iface *p = grid_p->Get_Iface(i);
 
         if (p != NULL)
         {

@@ -207,20 +207,20 @@ void Block::Deallocate_Memory()
  * \brief Print information.
  *
  * \param[in] os - stream
- * \param[in] block_p - Block pointer
+ * \param[in] p - Block pointer
  */
 ostream &operator<<(ostream &os,
-                    const Block *block_p)
+                    const Block *p)
 {
-    if (block_p->Is_Active())
+    if (p->Is_Active())
     {
         cout << "  Block("
-             << setw(3) << block_p->Id() << ","
-             << setw(3) << block_p->Rank() << "): s["
-             << setw(5) << block_p->I_Size() << ", "
-             << setw(5) << block_p->J_Size() << ", "
-             << setw(5) << block_p->K_Size() << "], m["
-             << setw(8) << block_p->Bytes_Count() << "]" << endl;
+             << setw(3) << p->Id() << ","
+             << setw(3) << p->Rank() << "): s["
+             << setw(5) << p->I_Size() << ", "
+             << setw(5) << p->J_Size() << ", "
+             << setw(5) << p->K_Size() << "], m["
+             << setw(8) << p->Bytes_Count() << "]" << endl;
     }
 }
 

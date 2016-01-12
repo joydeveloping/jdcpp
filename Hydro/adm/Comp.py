@@ -48,7 +48,7 @@ if (arg == "-h"):
     Print_Help()
 elif (arg == "local"):
     cmds = ["rm -rf ./bin/*.out",
-            "mpic++ -DDEBUG " + srcs + " -I./src -o ./bin/hydro.out"]
+            "mpic++ -g -DDEBUG " + srcs + " -I./src -o ./bin/hydro.out"]
 elif (arg == "mvs"):
     assert(False)
 else:
