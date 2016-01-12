@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &ranks_count);
     grid_p->Load_GEOM("../../../ciam/lazurit/Hydro/in/soplo2", ranks_count);
     cout << grid_p;
-
+    grid_p->Calculate_Iterations(1);
     delete grid_p;
 
     MPI_Finalize();

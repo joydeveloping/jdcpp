@@ -442,8 +442,8 @@ void Grid::Calculate_Iteration()
         }
     }
 
-    // TODO:
-    // Hydrodynamic calculations.
+    // Exchange.
+    Ifaces_MPI_Data_Exchange();
 
     // Check buffers.
     for (int i = 0; i < Ifaces_Count(); i++)
