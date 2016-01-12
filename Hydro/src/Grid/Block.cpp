@@ -5,12 +5,13 @@
  * \author Alexey Rybakov
  */
 
+#include "mpi.h"
 #include "Block.h"
 
 namespace Hydro { namespace Grid {
 
 /*
- * Block interface.
+ * Constructors/destructors.
  */
 
 /**
@@ -28,7 +29,8 @@ Block::Block(int id,
     : Id_(id),
       I_Size_(i_size),
       J_Size_(j_size),
-      K_Size_(k_size)
+      K_Size_(k_size),
+      Rank_(0)
 {
 }
 
@@ -39,6 +41,30 @@ Block::~Block()
 {
 }
 
+/*
+ * Simple data and characteristics.
+ */
+
+/**
+ * \brief Check if active.
+ *
+ * \return
+ * true - if block is active,
+ * false - if block is not active.
+ */
+bool Block::Is_Active() const
+{
+    int rank;
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    return Rank() == rank;
+}
+
+/*
+ * Information.
+ */
+
 /**
  * \brief Print information.
  *
@@ -48,10 +74,15 @@ Block::~Block()
 ostream &operator<<(ostream &os,
                     const Block *block_p)
 {
-    cout << "  Block(" << block_p->Get_Id() << "): "
-         << block_p->Get_I_Size() << ", "
-         << block_p->Get_J_Size() << ", "
-         << block_p->Get_K_Size() << endl;
+    if (block_p->Is_Active())
+    {
+        cout << "  Block("
+             << setw(3) << block_p->Id() << ","
+            << setw(3) << block_p->Rank() << "): ["
+            << setw(5) << block_p->I_Size() << ", "
+            << setw(5) << block_p->J_Size() << ", "
+            << setw(5) << block_p->K_Size() << "]" << endl;
+    }
 }
 
 } }

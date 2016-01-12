@@ -7,6 +7,8 @@
 
 #include "Lib/IO/io.h"
 
+using namespace std;
+
 namespace Hydro { namespace Grid {
 
 /**
@@ -29,10 +31,14 @@ public:
     ~Block();
 
     // Simple characteristics.
-    int Get_Id() const { return Id_; }
-    int Get_I_Size() const { return I_Size_; }
-    int Get_J_Size() const { return J_Size_; }
-    int Get_K_Size() const { return K_Size_; }
+    int Id() const { return Id_; }
+    int I_Size() const { return I_Size_; }
+    int J_Size() const { return J_Size_; }
+    int K_Size() const { return K_Size_; }
+    int Cells_Count() const { return I_Size() * J_Size() * K_Size(); }
+    int Rank() const { return Rank_; }
+    bool Is_Active() const;
+    void Set_Rank(int rank) { Rank_ = rank; }
 
 private:
 
@@ -40,8 +46,11 @@ private:
     int Id_;
 
     // I, J, K sizes.
+    // Size is count of cells in given direction.
     int I_Size_, J_Size_, K_Size_;
 
+    // Process rank.
+    int Rank_;
 };
 
 // Print information.
