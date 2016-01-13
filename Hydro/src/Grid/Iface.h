@@ -17,7 +17,7 @@ namespace Hydro { namespace Grid {
 /**
  * \brief Interface class.
  */
-class Iface : Border
+class Iface : public Border
 {
 
 public:
@@ -45,6 +45,7 @@ public:
     int K1() const { return K1_; }
     bool Is_BActive() const { return B()->Is_Active(); }
     Block *NB() const { return NB_p_; }
+    int Direction() const { return Direction_; }
     bool Is_NActive() const { return NB()->Is_Active(); }
     bool Is_Active() const { return Is_BActive() || Is_NActive(); }
     bool Is_MPI() const;
@@ -77,12 +78,18 @@ private:
     // Pointer to neighbour block.
     Block *NB_p_;
 
+    // Direction to neighbour.
+    int Direction_;
+
     // Buffer.
     float *Buffer_p_;
 
     // Allocate/deallocate memory.
     bool Allocate_Buffer();
     void Deallocate_Buffer();
+
+    // Other.
+    void Set_Direction();
 };
 
 // Print information.

@@ -8,10 +8,13 @@
 #ifndef HYDRO_GRID_FACET_H
 #define HYDRO_GRID_FACET_H
 
+#include <cassert>
 #include "Lib/IO/io.h"
 #include "Border.h"
 
 namespace Hydro { namespace Grid {
+
+class Iface;
 
 /**
  * \brief Facet.
@@ -35,6 +38,9 @@ public:
     char Symbol(int bi) const;
     virtual void Print(ostream &os) const = 0;
 
+    // Set interface.
+    virtual void Set_Iface(Iface *i_p) = 0;
+
 private:
 
     // Border pointers.
@@ -48,6 +54,9 @@ protected:
     // Memory managements.
     void Allocate_Memory();
     void Deallocate_Memory();
+
+    // Set borders.
+    void Set_Border(int i, Border *p) { Borders_p_[i] = p; }
 };
 
 // Print information.

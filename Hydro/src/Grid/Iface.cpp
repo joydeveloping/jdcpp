@@ -48,8 +48,11 @@ Iface::Iface(int id,
       K0_(k0),
       K1_(k1),
       NB_p_(nb_p),
+      Direction_(-1),
       Buffer_p_(NULL)
 {
+    Set_Direction();
+
     if (Is_Active())
     {
         Allocate_Buffer();
@@ -62,6 +65,42 @@ Iface::Iface(int id,
 Iface::~Iface()
 {
     Deallocate_Buffer();
+}
+
+/**
+ * \brief Set interface direction.
+ */
+void Iface::Set_Direction()
+{
+    int i0 = I0();
+    int j0 = J0();
+    int k0 = K0();
+    int is = I1() - i0;
+    int js = J1() - j0;
+    int ks = K1() - k0;
+
+    if (is == 0)
+    {
+        Direction_ = (i0 == 0)
+                     ? Direction::I0
+                     : Direction::I1;
+    }
+    else if (js == 0)
+    {
+        Direction_ = (j0 == 0)
+                     ? Direction::J0
+                     : Direction::J1;
+    }
+    else if (ks == 0)
+    {
+        Direction_ = (k0 == 0)
+                     ? Direction::K0
+                     : Direction::K1;
+    }
+    else
+    {
+        assert(false);
+    }
 }
 
 /*
@@ -182,7 +221,8 @@ ostream &operator<<(ostream &os,
            << setw(5) << p->J0() << ","
            << setw(5) << p->J1() << ","
            << setw(5) << p->K0() << ","
-           << setw(5) << p->K1() << "] -> "
+           << setw(5) << p->K1() << "] -- "
+           << Direction::Name(p->Direction()) << " -> "
            << setw(3) << p->NB()->Id() << ", m["
            << setw(8) << p->Buffer_Bytes_Count() << "]" << endl;
     }

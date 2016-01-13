@@ -84,6 +84,7 @@ private:
 
     // Load functions.
     bool Load_GEOM_Ifaces(ifstream &s);
+    void Set_Ifaces_To_Facets();
 
     // Some help functions for iteration.
     void Ifaces_MPI_Data_Exchange();

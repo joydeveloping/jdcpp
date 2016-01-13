@@ -8,6 +8,9 @@
 #ifndef HYDRO_GRID_DIRECTION_H
 #define HYDRO_GRID_DIRECTION_H
 
+#include <cassert>
+#include "Lib/IO/io.h"
+
 namespace Hydro { namespace Grid {
 
 /**
@@ -31,6 +34,9 @@ public:
         K1 = 5,   /**< K positive direction */
         Count = 6 /**< count of directions */
     };
+
+    // Functions.
+    static string Name(int direction);
 
 private:
 

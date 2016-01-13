@@ -36,13 +36,16 @@ public:
     // Information.
     void Print(ostream &os) const;
 
+    // Set interface.
+    void Set_Iface(Iface *i_p);
+
 private:
 
     // Size.
     int I_Size_, J_Size_;
 
     // Linear index of border.
-    int L(int i, int j) const { return i * J_Size() + j; }
+    int L(int i, int j) const;
 };
 
 // Print information.

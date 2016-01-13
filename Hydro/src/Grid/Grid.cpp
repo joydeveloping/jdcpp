@@ -216,6 +216,7 @@ bool Grid::Load_GEOM(const string name,
     {
         cout << "Err: Interfaces loading failed." << endl;
     }
+    Set_Ifaces_To_Facets();
 
     // Close files.
     file_pfg.close();
@@ -297,6 +298,22 @@ bool Grid::Load_GEOM_Ifaces(ifstream &s)
     }
 
     return true;
+}
+
+/**
+ * \brief Set ifaces pointers to facets.
+ */
+void Grid::Set_Ifaces_To_Facets()
+{
+    // Analyze each iface.
+    for (int i = 0; i < Ifaces_Count(); i++)
+    {
+        Iface *i_p = Get_Iface(i);
+        Block *b_p = i_p->B();
+        Facet *f_p = b_p->Get_Facet(i_p->Direction());
+
+        f_p->Set_Iface(i_p);
+    }
 }
 
 /*
