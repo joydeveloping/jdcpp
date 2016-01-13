@@ -566,11 +566,33 @@ void Grid::Ifaces_MPI_Data_Exchange()
 
 /**
  * \brief Print timers.
+ *
+ * \param[in] os - stream
  */
 void Grid::Print_Timers(ostream &os)
 {
     os << "Timers:" << endl;
     os << "  MPI_Shadow_Exchange : " << Timer_Shadow_Exchange()->Time() << endl;
+}
+
+/**
+ * \brief Print statistics.
+ *
+ * \param[in] os - stream
+ */
+void Grid::Print_Statistics(ostream &os)
+{
+    os << "Statistics:" << endl;
+}
+
+/**
+ * \brief Print blocks distribution between ranks.
+ *
+ * \param[in] os - stream
+ */
+void Grid::Print_Blocks_Distribution(ostream &os)
+{
+    os << "Blocks distribution:" << endl;
 }
 
 } }

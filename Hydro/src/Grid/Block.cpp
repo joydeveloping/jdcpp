@@ -7,6 +7,7 @@
 
 #include "mpi.h"
 #include "Block.h"
+#include "configure.h"
 
 namespace Hydro { namespace Grid {
 
@@ -259,10 +260,15 @@ ostream &operator<<(ostream &os,
            << setw(8) << p->Surface_Area() << "], m["
            << setw(8) << p->Bytes_Count() << "]" << endl;
 
+#if (HYDRO_GRID_IS_PRINT_FACETS)
+
         for (int i = 0; i < Direction::Count; i++)
         {
             os << p->Get_Facet(i);
         }
+
+#endif
+
     }
 }
 

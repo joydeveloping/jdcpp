@@ -18,5 +18,10 @@
  */
 #define HYDRO_GRID_DYNAMIC_FLOATS_PER_CELL 9
 
+/*
+ * Print configuration.
+ */
+#define HYDRO_GRID_IS_PRINT_FACETS false
+
 #endif
 

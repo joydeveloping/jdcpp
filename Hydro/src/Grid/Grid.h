@@ -53,6 +53,8 @@ public:
     // Information.
     void Print_Timers(ostream &os);
     void Print_Timers() { Print_Timers(cout); }
+    void Print_Statistics(ostream &os);
+    void Print_Blocks_Distribution(ostream &os);
 
 private:
 
