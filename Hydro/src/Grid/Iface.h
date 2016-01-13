@@ -9,6 +9,7 @@
 #define HYDRO_GRID_IFACE_H
 
 #include "Block.h"
+#include "Border.h"
 #include "configure.h"
 
 namespace Hydro { namespace Grid {
@@ -16,7 +17,7 @@ namespace Hydro { namespace Grid {
 /**
  * \brief Interface class.
  */
-class Iface
+class Iface : Border
 {
 
 public:
@@ -53,6 +54,10 @@ public:
                                              * HYDRO_GRID_DYNAMIC_FLOATS_PER_CELL; }
     int Buffer_Bytes_Count() const { return Buffer_Floats_Count() * sizeof(float); }
     void *MPI_Buffer() { return static_cast<void *>(Buffer_p_); }
+
+    // From parent.
+    bool Is_Iface() const { return true; }
+    bool Is_BCond() const { return false; }
 
     // Additional functions.
     void Set_Buffer_Value(float v);

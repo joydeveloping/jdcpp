@@ -292,7 +292,7 @@ bool Grid::Load_GEOM_Ifaces(ifstream &s)
 
         Ifaces_p_[cur_pos] = new Iface(id,
                                        Get_Block(bid - 1),
-                                       i0, i1, j0, j1, k0, k1,
+                                       i0 - 1, i1 - 1, j0 - 1, j1 - 1, k0 - 1, k1 - 1,
                                        Get_Block(nid - 1));
     }
 

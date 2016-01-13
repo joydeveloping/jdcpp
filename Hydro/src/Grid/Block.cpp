@@ -44,6 +44,12 @@ Block::Block(int id,
       Ro_(NULL),
       P_(NULL)
 {
+    for (int i = 0; i < Direction::Count; i++)
+    {
+        Facets_p_[i] = NULL;
+    }
+
+    Create_Facets();
 }
 
 /**
@@ -51,7 +57,37 @@ Block::Block(int id,
  */
 Block::~Block()
 {
+    Destroy_Facets();
     Deallocate_Memory();
+}
+
+/**
+ * \brief Create facets.
+ */
+void Block::Create_Facets()
+{
+    Destroy_Facets();
+
+    Facets_p_[Direction::I0] = new Facet(0, J_Size(), K_Size());
+    Facets_p_[Direction::I1] = new Facet(0, J_Size(), K_Size());
+    Facets_p_[Direction::J0] = new Facet(I_Size(), 0, K_Size());
+    Facets_p_[Direction::J1] = new Facet(I_Size(), 0, K_Size());
+    Facets_p_[Direction::K0] = new Facet(I_Size(), J_Size(), 0);
+    Facets_p_[Direction::K1] = new Facet(I_Size(), J_Size(), 0);
+}
+
+/**
+ * \brief Destroy facets.
+ */
+void Block::Destroy_Facets()
+{
+    for (int i = 0; i < Direction::Count; i++)
+    {
+        if (Facets_p_[i] != NULL)
+        {
+            delete Facets_p_[i];
+        }
+    }
 }
 
 /*
@@ -73,19 +109,18 @@ int Block::Bytes_Count() const
 }
 
 /**
- * \brief Check if active.
+ * \brief Surface area.
  *
  * \return
- * true - if block is active,
- * false - if block is not active.
+ * Surface area.
  */
-bool Block::Is_Active() const
+int Block::Surface_Area() const
 {
-    int rank;
+    int is = I_Size();
+    int js = J_Size();
+    int ks = K_Size();
 
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    return Rank() == rank;
+    return 2 * (is * js + is * ks + js * ks);
 }
 
 /*
@@ -219,8 +254,15 @@ ostream &operator<<(ostream &os,
            << setw(3) << p->Rank() << "): s["
            << setw(5) << p->I_Size() << ", "
            << setw(5) << p->J_Size() << ", "
-           << setw(5) << p->K_Size() << "], m["
+           << setw(5) << p->K_Size() << "], c["
+           << setw(8) << p->Cells_Count() << "], f["
+           << setw(8) << p->Surface_Area() << "], m["
            << setw(8) << p->Bytes_Count() << "]" << endl;
+
+        for (int i = 0; i < Direction::Count; i++)
+        {
+            os << p->Get_Facet(i);
+        }
     }
 }
 

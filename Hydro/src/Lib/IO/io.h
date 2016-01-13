@@ -14,9 +14,9 @@
 #include <string>
 #include <sstream>
 
-namespace  Lib { namespace IO {
-
 using namespace std;
+
+namespace  Lib { namespace IO {
 
 /**
  * \brief Convert type to string.

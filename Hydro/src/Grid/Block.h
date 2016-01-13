@@ -9,6 +9,9 @@
 #define HYDRO_GRID_BLOCK_H
 
 #include "Lib/IO/io.h"
+#include "Lib/MPI/mpi.h"
+#include "Direction.h"
+#include "Facet.h"
 
 using namespace std;
 
@@ -44,9 +47,12 @@ public:
     int K_Nodes() const { return K_Size() + 1; }
     int Nodes_Count() const { return I_Nodes() * J_Nodes() * K_Nodes(); }
     int Bytes_Count() const;
+    int Facet_Size(int direction) const { return Facets_p_[direction]->Size(); }
+    int Surface_Area() const;
     int Rank() const { return Rank_; }
-    bool Is_Active() const;
+    bool Is_Active() const { return Rank() == Lib::MPI::Rank(); }
     void Set_Rank(int rank) { Rank_ = rank; }
+    Facet *Get_Facet(int i) const { return Facets_p_[i]; }
 
     // Allocate/deallocate memory.
     bool Allocate_Memory();
@@ -63,6 +69,9 @@ private:
 
     // Process rank.
     int Rank_;
+
+    // Facets.
+    Facet *Facets_p_[Direction::Count];
 
     /*
      * Area of static data.
@@ -83,6 +92,11 @@ private:
 
     // Hydrodynamic characteristics (temperature, density, pressure).
     float *T_, *Ro_, *P_;
+
+    // Init.
+    void Create_Facets();
+    void Destroy_Facets();
+
 };
 
 // Print information.
