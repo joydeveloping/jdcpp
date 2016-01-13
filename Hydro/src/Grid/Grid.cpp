@@ -20,11 +20,12 @@ namespace Hydro { namespace Grid {
  * \brief Default constructor.
  */
 Grid::Grid()
-    : Blocks_Count_(0),
+    : Blocks_p_(NULL),
+      Blocks_Count_(0),
+      Ifaces_p_(NULL),
       Ifaces_Count_(0)
 {
-    // Empty grid.
-    Blocks_p_ = NULL;
+    Init_Timers();
 }
 
 /**
@@ -36,6 +37,14 @@ Grid::~Grid()
     Deallocate_Blocks_Pointers();
     Deallocate_Ifaces();
     Deallocate_Ifaces_Pointers();
+}
+
+/**
+ * \brief Init timers.
+ */
+void Grid::Init_Timers()
+{
+    Timer_Shadow_Exchange_p_ = new Lib::MPI::Timer();
 }
 
 /*
@@ -478,6 +487,8 @@ void Grid::Calculate_Iterations(int n)
  */
 void Grid::Ifaces_MPI_Data_Exchange()
 {
+    Timer_Shadow_Exchange()->Start();
+
     MPI_Request reqs[100];
     MPI_Status stats[100];
     int reqs_count = 0;
@@ -528,6 +539,21 @@ void Grid::Ifaces_MPI_Data_Exchange()
         // Wait all requests.
         MPI_Waitall(reqs_count, reqs, stats);
     }
+
+    Timer_Shadow_Exchange()->Stop();
+}
+
+/*
+ * Information.
+ */
+
+/**
+ * \brief Print timers.
+ */
+void Grid::Print_Timers(ostream &os)
+{
+    os << "Timers:" << endl;
+    os << "  MPI_Shadow_Exchange : " << Timer_Shadow_Exchange()->Time() << endl;
 }
 
 } }

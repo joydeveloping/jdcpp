@@ -8,6 +8,7 @@
 #ifndef HYDRO_GRID_GRID_H
 #define HYDRO_GRID_GRID_H
 
+#include "Lib/MPI/mpi.h"
 #include "Iface.h"
 
 namespace Hydro { namespace Grid {
@@ -46,6 +47,13 @@ public:
     void Calculate_Iteration();
     void Calculate_Iterations(int n);
 
+    // Timers.
+    Lib::MPI::Timer *Timer_Shadow_Exchange() const { return Timer_Shadow_Exchange_p_; }
+
+    // Information.
+    void Print_Timers(ostream &os);
+    void Print_Timers() { Print_Timers(cout); }
+
 private:
 
     // Count of blocks.
@@ -59,6 +67,12 @@ private:
 
     // Interfaces.
     Iface **Ifaces_p_;
+
+    // Timers.
+    Lib::MPI::Timer *Timer_Shadow_Exchange_p_;
+
+    // Init.
+    void Init_Timers();
 
     // Functions for Grid creation.
     bool Allocate_Blocks_Pointers(int count);

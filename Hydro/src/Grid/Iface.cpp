@@ -174,17 +174,17 @@ ostream &operator<<(ostream &os,
 {
     if (p->Is_Active())
     {
-        cout << "  Iface("
-             << setw(3) << p->Id() << "): "
-             << setw(3) << p->B()->Id() << "["
-             << setw(5) << p->I0() << ","
-             << setw(5) << p->I1() << ","
-             << setw(5) << p->J0() << ","
-             << setw(5) << p->J1() << ","
-             << setw(5) << p->K0() << ","
-             << setw(5) << p->K1() << "] -> "
-             << setw(3) << p->NB()->Id() << ", m["
-             << setw(8) << p->Buffer_Bytes_Count() << "]" << endl;
+        os << "  Iface("
+           << setw(3) << p->Id() << "): "
+           << setw(3) << p->B()->Id() << "["
+           << setw(5) << p->I0() << ","
+           << setw(5) << p->I1() << ","
+           << setw(5) << p->J0() << ","
+           << setw(5) << p->J1() << ","
+           << setw(5) << p->K0() << ","
+           << setw(5) << p->K1() << "] -> "
+           << setw(3) << p->NB()->Id() << ", m["
+           << setw(8) << p->Buffer_Bytes_Count() << "]" << endl;
     }
 }
 

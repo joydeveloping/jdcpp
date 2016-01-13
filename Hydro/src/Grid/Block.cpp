@@ -214,13 +214,13 @@ ostream &operator<<(ostream &os,
 {
     if (p->Is_Active())
     {
-        cout << "  Block("
-             << setw(3) << p->Id() << ","
-             << setw(3) << p->Rank() << "): s["
-             << setw(5) << p->I_Size() << ", "
-             << setw(5) << p->J_Size() << ", "
-             << setw(5) << p->K_Size() << "], m["
-             << setw(8) << p->Bytes_Count() << "]" << endl;
+        os << "  Block("
+           << setw(3) << p->Id() << ","
+           << setw(3) << p->Rank() << "): s["
+           << setw(5) << p->I_Size() << ", "
+           << setw(5) << p->J_Size() << ", "
+           << setw(5) << p->K_Size() << "], m["
+           << setw(8) << p->Bytes_Count() << "]" << endl;
     }
 }
 
