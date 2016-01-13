@@ -12,6 +12,9 @@
 #include "Lib/MPI/mpi.h"
 #include "Direction.h"
 #include "Facet.h"
+#include "Facet_I.h"
+#include "Facet_J.h"
+#include "Facet_K.h"
 
 using namespace std;
 

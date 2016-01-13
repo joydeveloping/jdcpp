@@ -68,12 +68,12 @@ void Block::Create_Facets()
 {
     Destroy_Facets();
 
-    Facets_p_[Direction::I0] = new Facet(0, J_Size(), K_Size());
-    Facets_p_[Direction::I1] = new Facet(0, J_Size(), K_Size());
-    Facets_p_[Direction::J0] = new Facet(I_Size(), 0, K_Size());
-    Facets_p_[Direction::J1] = new Facet(I_Size(), 0, K_Size());
-    Facets_p_[Direction::K0] = new Facet(I_Size(), J_Size(), 0);
-    Facets_p_[Direction::K1] = new Facet(I_Size(), J_Size(), 0);
+    Facets_p_[Direction::I0] = new Facet_I(J_Size(), K_Size());
+    Facets_p_[Direction::I1] = new Facet_I(J_Size(), K_Size());
+    Facets_p_[Direction::J0] = new Facet_J(I_Size(), K_Size());
+    Facets_p_[Direction::J1] = new Facet_J(I_Size(), K_Size());
+    Facets_p_[Direction::K0] = new Facet_K(I_Size(), J_Size());
+    Facets_p_[Direction::K1] = new Facet_K(I_Size(), J_Size());
 }
 
 /**

@@ -22,30 +22,28 @@ class Facet
 public:
 
     // Constructors/destructors.
-    Facet(int i_size,
-          int j_size,
-          int k_size);
-    ~Facet();
+    Facet();
+    virtual ~Facet();
 
     // Simple data and characteristics.
-    int I_Size() const { return I_Size_; }
-    int J_Size() const { return J_Size_; }
-    int K_Size() const { return K_Size_; }
-    bool Is_Direction_I() const { return I_Size() == 0; }
-    bool Is_Direction_J() const { return J_Size() == 0; }
-    bool Is_Direction_K() const { return K_Size() == 0; }
-    int Size() const;
+    virtual bool Is_Direction_I() const = 0;
+    virtual bool Is_Direction_J() const = 0;
+    virtual bool Is_Direction_K() const = 0;
+    virtual int Size() const = 0;
 
     // Information.
     char Symbol(int bi) const;
+    virtual void Print(ostream &os) const = 0;
 
 private:
 
-    // Sizes.
-    int I_Size_, J_Size_, K_Size_;
-
     // Border pointers.
     Border **Borders_p_;
+
+    // Linearization of index.
+    virtual int L(int, int) const = 0;
+
+protected:
 
     // Memory managements.
     void Allocate_Memory();
