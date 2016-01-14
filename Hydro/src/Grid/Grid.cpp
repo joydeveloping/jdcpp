@@ -7,6 +7,8 @@
 
 #include <fstream>
 #include <cassert>
+#include <vector>
+#include "Lib/MPI/mpi.h"
 #include "mpi.h"
 #include "Grid.h"
 
@@ -592,7 +594,138 @@ void Grid::Print_Statistics(ostream &os)
  */
 void Grid::Print_Blocks_Distribution(ostream &os)
 {
+    int ranks = Lib::MPI::Ranks_Count();
+
     os << "Blocks distribution:" << endl;
+
+    /*
+     * We need following information:
+     * - process number,
+     * - blocks count,
+     * - blocks percent,
+     * - cells count,
+     * - cells percent,
+     * - shadow cells count,
+     * - shadow cells percent.
+     */
+
+    /**
+     * \brief Class for distribution statistic.
+     */
+    class Stat
+    {
+        public:
+
+            // Constructor.
+            Stat()
+                : Process_Number(0),
+                  Blocks_Count(0),
+                  Blocks_Percent(0.0),
+                  Cells_Count(0),
+                  Cells_Percent(0.0)
+            {}
+
+            // Print.
+            void Print(ostream &os)
+            {
+                os << " | " << setw(8) << Blocks_Count
+                   << " | " << setw(6) << setprecision(2) << fixed << Blocks_Percent
+                   << " % | " << setw(8) << Cells_Count
+                   << " | " << setw(6) << setprecision(2) << fixed << Cells_Percent
+                   << " % |" << endl;
+            }
+
+            // Statistic fields.
+            int Process_Number,
+                Blocks_Count, Cells_Count;
+            double Blocks_Percent, Cells_Percent;
+    };
+
+    // Array of statistic elements.
+    Stat *m = new Stat[ranks + 3];
+
+    // Set processec numbers.
+    for (int i = 0; i < ranks; i++)
+    {
+        m[i].Process_Number = i;
+    }
+    m[ranks + 1].Process_Number = -1;
+    m[ranks + 2].Process_Number = -1;
+
+    // Set blocks and cells count.
+    for (int i = 0; i < Blocks_Count(); i++)
+    {
+        Block *p = Get_Block(i);
+        int r = p->Rank();
+
+        m[r].Blocks_Count++;
+        m[r].Cells_Count += p->Cells_Count();
+
+        // total
+        m[ranks].Blocks_Count++;
+        m[ranks].Cells_Count += p->Cells_Count();
+    }
+
+    // Set min/max.
+    if (ranks > 0)
+    {
+        m[ranks + 1].Blocks_Count = m[0].Blocks_Count;
+        m[ranks + 1].Cells_Count = m[0].Cells_Count;
+        m[ranks + 2].Blocks_Count = m[0].Blocks_Count;
+        m[ranks + 2].Cells_Count = m[0].Cells_Count;
+    }
+    for (int i = 1; i < ranks; i++)
+    {
+        if (m[i].Blocks_Count < m[ranks + 1].Blocks_Count)
+        {
+            m[ranks + 1].Blocks_Count = m[i].Blocks_Count;
+        }
+        if (m[i].Cells_Count < m[ranks + 1].Cells_Count)
+        {
+            m[ranks + 1].Cells_Count = m[i].Cells_Count;
+        }
+        if (m[i].Blocks_Count > m[ranks + 2].Blocks_Count)
+        {
+            m[ranks + 2].Blocks_Count = m[i].Blocks_Count;
+        }
+        if (m[i].Cells_Count > m[ranks + 2].Cells_Count)
+        {
+            m[ranks + 2].Cells_Count = m[i].Cells_Count;
+        }
+    }
+
+    // Correct percentage.
+    for (int i = 0; i < ranks + 3; i++)
+    {
+        m[i].Blocks_Percent = (m[ranks].Blocks_Count != 0)
+                              ? 100.0 * m[i].Blocks_Count / m[ranks].Blocks_Count
+                              : 0.0;
+        m[i].Cells_Percent = (m[ranks].Cells_Count != 0)
+                             ? 100.0 * m[i].Cells_Count / m[ranks].Cells_Count
+                             : 0.0;
+    }
+
+    // Print result.
+    os << "*----------*----------*----------*----------*----------*" << endl;
+    os << "| Process  | Blocks   | Blocks   | Cells    | Cells    |" << endl;
+    os << "|   Number |    Count |  Percent |    Count |  Percent |" << endl;
+    os << "*----------*----------*----------*----------*----------*" << endl;
+    for (int i = 0; i < ranks; i++)
+    {
+        os << "| " << setw(8) << m[i].Process_Number;
+        m[i].Print(os);
+    }
+    os << "*----------*----------*----------*----------*----------*" << endl;
+    os << "| " << setw(8) << "total";
+    m[ranks].Print(os);
+    os << "| " << setw(8) << "min";
+    m[ranks + 1].Print(os);
+    os << "| " << setw(8) << "max";
+    m[ranks + 2].Print(os);
+    os << "*----------*----------*----------*----------*----------*" << endl;
+
+    // Free memory.
+    delete m;
 }
 
 } }
