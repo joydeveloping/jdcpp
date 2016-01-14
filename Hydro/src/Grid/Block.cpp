@@ -124,6 +124,129 @@ int Block::Surface_Area() const
     return 2 * (is * js + is * ks + js * ks);
 }
 
+/**
+ * \brief Get shadow cells count.
+ *
+ * \return
+ * Count of shadow cells.
+ */
+int Block::Shadow_Cells_Count() const
+{
+    int is = I_Size();
+    int js = J_Size();
+    int ks = K_Size();
+    int c = 0;
+    int d = HYDRO_GRID_SHADOW_DEPTH;
+
+    // We have to analyze all cells.
+    for (int i = 0; i < is; i++)
+    {
+        for (int j = 0; j < js; j++)
+        {
+            for (int k = 0; k < ks; k++)
+            {
+                if (i < d)
+                {
+                    // Facet I0.
+                    if (Get_Facet(Direction::I0)->Is_Iface(j, k))
+                    {
+                        c++;
+
+                        continue;
+                    }
+                }
+
+                if (i > is - 1 - d)
+                {
+                    // Facet I1.
+                    if (Get_Facet(Direction::I1)->Is_Iface(j, k))
+                    {
+                        c++;
+
+                        continue;
+                    }
+                }
+
+                if (j < d)
+                {
+                    // Facet J0.
+
+                    if (Get_Facet(Direction::J0)->Is_Iface(i, k))
+                    {
+                        c++;
+
+                        continue;
+                    }
+                }
+
+                if (j > js - 1 - d)
+                {
+                    if (Get_Facet(Direction::J1)->Is_Iface(i, k))
+                    {
+                        c++;
+
+                        continue;
+                    }
+                }
+
+                if (k < d)
+                {
+                    if (Get_Facet(Direction::K0)->Is_Iface(i, j))
+                    {
+                        c++;
+
+                        continue;
+                    }
+                }
+
+                if (k > ks - 1 - d)
+                {
+                    if (Get_Facet(Direction::K1)->Is_Iface(i, j))
+                    {
+                        c++;
+
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+
+    return c;
+}
+
+/**
+ * \brief Get inner cells count.
+ *
+ * \return
+ * Count of inner cells.
+ */
+int Block::Inner_Cells_Count() const
+{
+    int d2 = HYDRO_GRID_SHADOW_DEPTH * 2;
+    int is = I_Size() - d2;
+    int js = J_Size() - d2;
+    int ks = K_Size() - d2;
+
+    if ((is <= 0) || (js <= 0) || (ks <= 0))
+    {
+        return 0;
+    }
+
+    return is * js * ks;
+}
+
+/**
+ * \brief Get count of border cells.
+ *
+ * \return
+ * Border cells count.
+ */
+int Block::Border_Cells_Count() const
+{
+    return Cells_Count() - Shadow_Cells_Count() - Inner_Cells_Count();
+}
+
 /*
  * Allocate/deallocate memory.
  */

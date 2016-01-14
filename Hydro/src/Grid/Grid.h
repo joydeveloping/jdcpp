@@ -35,6 +35,10 @@ public:
     bool Is_Empty() const { return Blocks_Count() == 0; }
     Block *Get_Block(int n) const { return Blocks_p_[n]; }
     Iface *Get_Iface(int n) const { return Ifaces_p_[n]; }
+    int Cells_Count() const;
+    int Shadow_Cells_Count() const;
+    int Inner_Cells_Count() const;
+    int Border_Cells_Count() const;
 
     // Load and create Grid.
     bool Load_GEOM(const string name, int ranks_count);

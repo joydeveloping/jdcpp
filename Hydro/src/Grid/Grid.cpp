@@ -50,6 +50,75 @@ void Grid::Init_Timers()
 }
 
 /*
+ * Simple data functions and characteristics.
+ */
+
+/**
+ * \brief Get cells count.
+ *
+ * \return
+ * Count of cells.
+ */
+int Grid::Cells_Count() const
+{
+    int c = 0;
+
+    for (int i = 0; i < Blocks_Count(); i++)
+    {
+        c += Get_Block(i)->Cells_Count();
+    }
+
+    return c;
+}
+
+/**
+ * \brief Get shadow cells count.
+ *
+ * \return
+ * Count of shadow cells.
+ */
+int Grid::Shadow_Cells_Count() const
+{
+    int c = 0;
+
+    for (int i = 0; i < Blocks_Count(); i++)
+    {
+        c += Get_Block(i)->Shadow_Cells_Count();
+    }
+
+    return c;
+}
+
+/**
+ * \brief Get inner cells count.
+ *
+ * \return
+ * Count of inner cells.
+ */
+int Grid::Inner_Cells_Count() const
+{
+    int c = 0;
+
+    for (int i = 0; i < Blocks_Count(); i++)
+    {
+        c += Get_Block(i)->Inner_Cells_Count();
+    }
+
+    return c;
+}
+
+/**
+ * \brief Get border cells count.
+ *
+ * \return
+ * Count of border cells.
+ */
+int Grid::Border_Cells_Count() const
+{
+    return Cells_Count() - Shadow_Cells_Count() - Inner_Cells_Count();
+}
+
+/*
  * Allocate/deallocate blocks.
  */
 
@@ -508,8 +577,8 @@ void Grid::Ifaces_MPI_Data_Exchange()
 {
     Timer_Shadow_Exchange()->Start();
 
-    MPI_Request reqs[100];
-    MPI_Status stats[100];
+    MPI_Request reqs[1000];
+    MPI_Status stats[1000];
     int reqs_count = 0;
     int i = 0;
 
@@ -584,7 +653,29 @@ void Grid::Print_Timers(ostream &os)
  */
 void Grid::Print_Statistics(ostream &os)
 {
+    int cc = Cells_Count();
+    int scc = Shadow_Cells_Count();
+    int icc = Inner_Cells_Count();
+    int bcc = Border_Cells_Count();
+
     os << "Statistics:" << endl;
+
+    /*
+     * Main characteristics of grid.
+     */
+
+    os << "  Blocks Count         : " << setw(8) << Blocks_Count() << endl;
+    os << "  Ifaces Count         : " << setw(8) << Ifaces_Count() << endl;
+    os << "  Cells Count          : " << setw(8) << cc << endl;
+    os << "  Shadow Cells Count   : " << setw(8) << scc << endl;
+    os << "  Shadow Cells Percent : " << setw(8) << setprecision(2) << fixed
+                                      << (100.0 * scc / cc) << " %" << endl;
+    os << "  Inner Cells Count    : " << setw(8) << icc << endl;
+    os << "  Inner Cells Percent  : " << setw(8) << setprecision(2) << fixed
+                                      << (100.0 * icc / cc) << " %" << endl;
+    os << "  Border Cells Count   : " << setw(8) << bcc << endl;
+    os << "  Border Cells Percent : " << setw(8) << setprecision(2) << fixed
+                                      << (100.0 * bcc / cc) << " %" << endl;
 }
 
 /**
@@ -622,7 +713,9 @@ void Grid::Print_Blocks_Distribution(ostream &os)
                   Blocks_Count(0),
                   Blocks_Percent(0.0),
                   Cells_Count(0),
-                  Cells_Percent(0.0)
+                  Cells_Percent(0.0),
+                  Shadow_Cells_Count(0),
+                  Shadow_Cells_Percent(0.0)
             {}
 
             // Print.
@@ -632,13 +725,15 @@ void Grid::Print_Blocks_Distribution(ostream &os)
                    << " | " << setw(6) << setprecision(2) << fixed << Blocks_Percent
                    << " % | " << setw(8) << Cells_Count
                    << " | " << setw(6) << setprecision(2) << fixed << Cells_Percent
+                   << " % | " << setw(8) << Shadow_Cells_Count
+                   << " | " << setw(6) << setprecision(2) << fixed << Shadow_Cells_Percent
                    << " % |" << endl;
             }
 
             // Statistic fields.
             int Process_Number,
-                Blocks_Count, Cells_Count;
-            double Blocks_Percent, Cells_Percent;
+                Blocks_Count, Cells_Count, Shadow_Cells_Count;
+            double Blocks_Percent, Cells_Percent, Shadow_Cells_Percent;
     };
 
     // Array of statistic elements.
@@ -657,13 +752,17 @@ void Grid::Print_Blocks_Distribution(ostream &os)
     {
         Block *p = Get_Block(i);
         int r = p->Rank();
+        int cc = p->Cells_Count();
+        int scc = p->Shadow_Cells_Count();
 
         m[r].Blocks_Count++;
-        m[r].Cells_Count += p->Cells_Count();
+        m[r].Cells_Count += cc;
+        m[r].Shadow_Cells_Count += scc;
 
         // total
         m[ranks].Blocks_Count++;
-        m[ranks].Cells_Count += p->Cells_Count();
+        m[ranks].Cells_Count += cc;
+        m[ranks].Shadow_Cells_Count += scc;
     }
 
     // Set min/max.
@@ -671,8 +770,10 @@ void Grid::Print_Blocks_Distribution(ostream &os)
     {
         m[ranks + 1].Blocks_Count = m[0].Blocks_Count;
         m[ranks + 1].Cells_Count = m[0].Cells_Count;
+        m[ranks + 1].Shadow_Cells_Count = m[0].Shadow_Cells_Count;
         m[ranks + 2].Blocks_Count = m[0].Blocks_Count;
         m[ranks + 2].Cells_Count = m[0].Cells_Count;
+        m[ranks + 2].Shadow_Cells_Count = m[0].Shadow_Cells_Count;
     }
     for (int i = 1; i < ranks; i++)
     {
@@ -684,6 +785,10 @@ void Grid::Print_Blocks_Distribution(ostream &os)
         {
             m[ranks + 1].Cells_Count = m[i].Cells_Count;
         }
+        if (m[i].Shadow_Cells_Count < m[ranks + 1].Shadow_Cells_Count)
+        {
+            m[ranks + 1].Shadow_Cells_Count = m[i].Shadow_Cells_Count;
+        }
         if (m[i].Blocks_Count > m[ranks + 2].Blocks_Count)
         {
             m[ranks + 2].Blocks_Count = m[i].Blocks_Count;
@@ -692,37 +797,45 @@ void Grid::Print_Blocks_Distribution(ostream &os)
         {
             m[ranks + 2].Cells_Count = m[i].Cells_Count;
         }
+        if (m[i].Shadow_Cells_Count > m[ranks + 2].Shadow_Cells_Count)
+        {
+            m[ranks + 2].Shadow_Cells_Count = m[i].Shadow_Cells_Count;
+        }
     }
 
     // Correct percentage.
     for (int i = 0; i < ranks + 3; i++)
     {
         m[i].Blocks_Percent = (m[ranks].Blocks_Count != 0)
-                              ? 100.0 * m[i].Blocks_Count / m[ranks].Blocks_Count
+                              ? (100.0 * m[i].Blocks_Count / m[ranks].Blocks_Count)
                               : 0.0;
         m[i].Cells_Percent = (m[ranks].Cells_Count != 0)
-                             ? 100.0 * m[i].Cells_Count / m[ranks].Cells_Count
+                             ? (100.0 * m[i].Cells_Count / m[ranks].Cells_Count)
                              : 0.0;
+        m[i].Shadow_Cells_Percent = (m[ranks].Shadow_Cells_Count != 0)
+                                    ? (100.0 * m[i].Shadow_Cells_Count
+                                       / m[ranks].Shadow_Cells_Count)
+                                    : 0.0;
     }
 
     // Print result.
-    os << "*----------*----------*----------*----------*----------*" << endl;
-    os << "| Process  | Blocks   | Blocks   | Cells    | Cells    |" << endl;
-    os << "|   Number |    Count |  Percent |    Count |  Percent |" << endl;
-    os << "*----------*----------*----------*----------*----------*" << endl;
+    os << "*----------*----------*----------*----------*----------*----------*----------*" << endl;
+    os << "| Process  | Blocks   | Blocks   | Cells    | Cells    | S. Cells | S. Cells |" << endl;
+    os << "|   Number |    Count |  Percent |    Count |  Percent |    Count |  Percent |" << endl;
+    os << "*----------*----------*----------*----------*----------*----------*----------*" << endl;
     for (int i = 0; i < ranks; i++)
     {
         os << "| " << setw(8) << m[i].Process_Number;
         m[i].Print(os);
     }
-    os << "*----------*----------*----------*----------*----------*" << endl;
+    os << "*----------*----------*----------*----------*----------*----------*----------*" << endl;
     os << "| " << setw(8) << "total";
     m[ranks].Print(os);
     os << "| " << setw(8) << "min";
     m[ranks + 1].Print(os);
     os << "| " << setw(8) << "max";
     m[ranks + 2].Print(os);
-    os << "*----------*----------*----------*----------*----------*" << endl;
+    os << "*----------*----------*----------*----------*----------*----------*----------*" << endl;
 
     // Free memory.
     delete m;

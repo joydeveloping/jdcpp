@@ -38,6 +38,8 @@ public:
     int Size() const { return Width() * Height(); }
 
     // Information.
+    bool Is_Iface(int i,
+                  int j) const;
     char Symbol(int bi) const;
     void Print(ostream &os) const;
 

@@ -69,6 +69,29 @@ void Facet::Deallocate_Memory()
  */
 
 /**
+ * \brief Check if interface in facet.
+ *
+ * \param[in] i - i coordinate
+ * \param[in] j - j coordinate
+ *
+ * \return
+ * true - if it is interface,
+ * false - if it is not interface.
+ */
+bool Facet::Is_Iface(int i,
+                     int j) const
+{
+    Border *p = Borders_p_[L(i, j)];
+
+    if (p == NULL)
+    {
+        return false;
+    }
+
+    return p->Is_Iface();
+}
+
+/**
  * \brief Get border symbol.
  *
  * \param[in] bi - border index

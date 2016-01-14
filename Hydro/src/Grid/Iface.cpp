@@ -214,7 +214,7 @@ ostream &operator<<(ostream &os,
     if (p->Is_Active())
     {
         os << "  Iface("
-           << setw(3) << p->Id() << "): "
+           << setw(4) << p->Id() << "): "
            << setw(3) << p->B()->Id() << "["
            << setw(5) << p->I0() << ","
            << setw(5) << p->I1() << ","
