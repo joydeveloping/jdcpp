@@ -25,31 +25,41 @@ class Facet
 public:
 
     // Constructors/destructors.
-    Facet();
+    Facet(int height,
+          int width);
     virtual ~Facet();
 
     // Simple data and characteristics.
+    int Height() const { return Height_; }
+    int Width() const { return Width_; }
     virtual bool Is_Direction_I() const = 0;
     virtual bool Is_Direction_J() const = 0;
     virtual bool Is_Direction_K() const = 0;
-    virtual int Size() const = 0;
+    int Size() const { return Width() * Height(); }
 
     // Information.
     char Symbol(int bi) const;
-    virtual void Print(ostream &os) const = 0;
+    void Print(ostream &os) const;
 
     // Set interface.
     virtual void Set_Iface(Iface *i_p) = 0;
 
 private:
 
+    /*
+     * Sizes.
+     *
+     *      Width
+     *   *---------*
+     *   |         |
+     *   |         | Height
+     *   |         |
+     *   *---------*
+     */
+    int Height_, Width_;
+
     // Border pointers.
     Border **Borders_p_;
-
-    // Linearization of index.
-    virtual int L(int, int) const = 0;
-
-protected:
 
     // Memory managements.
     void Allocate_Memory();
@@ -57,6 +67,14 @@ protected:
 
     // Set borders.
     void Set_Border(int i, Border *p) { Borders_p_[i] = p; }
+
+    // Linearization.
+    int L(int i, int j) const;
+
+protected:
+
+    // Set border.
+    void Set_Border(int i, int j, Border *p) { Set_Border(L(i, j), p); }
 };
 
 // Print information.

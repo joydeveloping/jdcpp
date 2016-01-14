@@ -21,36 +21,18 @@ class Facet_I : public Facet
 public:
 
     // Constructors/descturcors.
-    Facet_I(int j_size,
-            int k_size);
-    ~Facet_I();
+    Facet_I(int j_size, int k_size) : Facet(j_size, k_size) {}
 
     // Simple characteristics.
-    int J_Size() const { return J_Size_; }
-    int K_Size() const { return K_Size_; }
+    int J_Size() const { return Height(); }
+    int K_Size() const { return Width(); }
     bool Is_Direction_I() const { return true; }
     bool Is_Direction_J() const { return false; }
     bool Is_Direction_K() const { return false; }
-    int Size() const { return J_Size() * K_Size(); }
-
-    // Information.
-    void Print(ostream &os) const;
 
     // Set interface.
     void Set_Iface(Iface *i_p);
-
-private:
-
-    // Size.
-    int J_Size_, K_Size_;
-
-    // Linear index of border.
-    int L(int j, int k) const;
 };
-
-// Print information.
-ostream &operator<<(ostream &os,
-                    const Facet_I *p);
 
 } }
 

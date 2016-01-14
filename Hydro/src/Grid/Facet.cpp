@@ -17,10 +17,17 @@ namespace Hydro { namespace Grid {
 
 /**
  * \brief Default constructor.
+ *
+ * \param[in] height - height
+ * \param[in] width - width
  */
-Facet::Facet()
-    : Borders_p_(NULL)
+Facet::Facet(int height,
+             int width)
+    : Height_(height),
+      Width_(width),
+      Borders_p_(NULL)
 {
+    Allocate_Memory();
 }
 
 /**
@@ -28,6 +35,7 @@ Facet::Facet()
  */
 Facet::~Facet()
 {
+    Deallocate_Memory();
 }
 
 /**
@@ -90,6 +98,44 @@ char Facet::Symbol(int bi) const
         }
 
         assert(false);
+    }
+}
+
+/**
+ * \brief Index linearization.
+ *
+ * \param[in] i - i index
+ * \param[in] j - j index
+ *
+ * \return
+ * Linear index.
+ */
+int Facet::L(int i, int j) const
+{
+    int lin = i * Width() + j;
+
+    assert(lin < Size());
+
+    return lin;
+}
+
+/**
+ * \brief Print information.
+ *
+ * \param[in] os - stream
+ */
+void Facet::Print(ostream &os) const
+{
+    os << "    Facet:" << endl;
+
+    for (int i = 0; i < Height(); i++)
+    {
+        os << "      ";
+        for (int j = 0; j < Width(); j++)
+        {
+            os << Symbol(L(i, j));
+        }
+        os << endl;
     }
 }
 
