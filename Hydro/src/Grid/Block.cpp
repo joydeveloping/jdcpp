@@ -125,12 +125,12 @@ int Block::Surface_Area() const
 }
 
 /**
- * \brief Get shadow cells count.
+ * \brief Get interface cells count.
  *
  * \return
- * Count of shadow cells.
+ * Count of interface cells.
  */
-int Block::Shadow_Cells_Count() const
+int Block::Iface_Cells_Count() const
 {
     int is = I_Size();
     int js = J_Size();
@@ -216,6 +216,85 @@ int Block::Shadow_Cells_Count() const
 }
 
 /**
+ * \brief Get shadow cells count.
+ *
+ * \return
+ * Count of shadow cells.
+ */
+int Block::Shadow_Cells_Count() const
+{
+    int is = I_Size();
+    int js = J_Size();
+    int ks = K_Size();
+    int c = 0;
+    int d = HYDRO_GRID_SHADOW_DEPTH;
+
+    // We have to analyze all cells.
+    for (int i = 0; i < is; i++)
+    {
+        for (int j = 0; j < js; j++)
+        {
+            for (int k = 0; k < ks; k++)
+            {
+                if (i < d)
+                {
+                    // Facet I0.
+                    if (Get_Facet(Direction::I0)->Is_Iface(j, k))
+                    {
+                        c++;
+                    }
+                }
+
+                if (i > is - 1 - d)
+                {
+                    // Facet I1.
+                    if (Get_Facet(Direction::I1)->Is_Iface(j, k))
+                    {
+                        c++;
+                    }
+                }
+
+                if (j < d)
+                {
+                    // Facet J0.
+
+                    if (Get_Facet(Direction::J0)->Is_Iface(i, k))
+                    {
+                        c++;
+                    }
+                }
+
+                if (j > js - 1 - d)
+                {
+                    if (Get_Facet(Direction::J1)->Is_Iface(i, k))
+                    {
+                        c++;
+                    }
+                }
+
+                if (k < d)
+                {
+                    if (Get_Facet(Direction::K0)->Is_Iface(i, j))
+                    {
+                        c++;
+                    }
+                }
+
+                if (k > ks - 1 - d)
+                {
+                    if (Get_Facet(Direction::K1)->Is_Iface(i, j))
+                    {
+                        c++;
+                    }
+                }
+            }
+        }
+    }
+
+    return c;
+}
+
+/**
  * \brief Get inner cells count.
  *
  * \return
@@ -236,17 +315,6 @@ int Block::Inner_Cells_Count() const
     return is * js * ks;
 }
 
-/**
- * \brief Get count of border cells.
- *
- * \return
- * Border cells count.
- */
-int Block::Border_Cells_Count() const
-{
-    return Cells_Count() - Shadow_Cells_Count() - Inner_Cells_Count();
-}
-
 /*
  * Allocate/deallocate memory.
  */
@@ -265,18 +333,18 @@ bool Block::Allocate_Memory()
 
     Deallocate_Memory();
 
-    NX_ = new float[nodes_count];
-    NY_ = new float[nodes_count];
-    NZ_ = new float[nodes_count];
-    CX_ = new float[cells_count];
-    CY_ = new float[cells_count];
-    CZ_ = new float[cells_count];
-    VX_ = new float[cells_count];
-    VY_ = new float[cells_count];
-    VZ_ = new float[cells_count];
-    T_ = new float[cells_count];
-    Ro_ = new float[cells_count];
-    P_ = new float[cells_count];
+    //NX_ = new float[nodes_count];
+    //NY_ = new float[nodes_count];
+    //NZ_ = new float[nodes_count];
+    //CX_ = new float[cells_count];
+    //CY_ = new float[cells_count];
+    //CZ_ = new float[cells_count];
+    //VX_ = new float[cells_count];
+    //VY_ = new float[cells_count];
+    //VZ_ = new float[cells_count];
+    //T_ = new float[cells_count];
+    //Ro_ = new float[cells_count];
+    //P_ = new float[cells_count];
 
     return (NX_ != NULL)
            && (NY_ != NULL)

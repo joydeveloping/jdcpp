@@ -72,6 +72,24 @@ int Grid::Cells_Count() const
 }
 
 /**
+ * \brief Get interface cells count.
+ *
+ * \return
+ * Count of interface cells.
+ */
+int Grid::Iface_Cells_Count() const
+{
+    int c = 0;
+
+    for (int i = 0; i < Blocks_Count(); i++)
+    {
+        c += Get_Block(i)->Iface_Cells_Count();
+    }
+
+    return c;
+}
+
+/**
  * \brief Get shadow cells count.
  *
  * \return
@@ -115,7 +133,32 @@ int Grid::Inner_Cells_Count() const
  */
 int Grid::Border_Cells_Count() const
 {
-    return Cells_Count() - Shadow_Cells_Count() - Inner_Cells_Count();
+    return Cells_Count() - Inner_Cells_Count();
+}
+
+/**
+ * \brief Get count of cell used in MPI exchange.
+ *
+ * \return
+ * MPI cells count.
+ */
+int Grid::MPI_Cells_Count() const
+{
+    int c = 0;
+
+    // Count of MPI cell is just count of cells in interfaces,
+    // where nodes are from differet processes.
+    for (int i = 0; i < Ifaces_Count(); i++)
+    {
+        Iface *p = Get_Iface(i);
+
+        if (p->B()->Rank() != p->NB()->Rank())
+        {
+            c += p->Cells_Count() * HYDRO_GRID_SHADOW_DEPTH;
+        }
+    }
+
+    return c;
 }
 
 /*
@@ -654,9 +697,11 @@ void Grid::Print_Timers(ostream &os)
 void Grid::Print_Statistics(ostream &os)
 {
     int cc = Cells_Count();
+    int ifcc = Iface_Cells_Count();
     int scc = Shadow_Cells_Count();
     int icc = Inner_Cells_Count();
     int bcc = Border_Cells_Count();
+    int mcc = MPI_Cells_Count();
 
     os << "Statistics:" << endl;
 
@@ -667,15 +712,21 @@ void Grid::Print_Statistics(ostream &os)
     os << "  Blocks Count         : " << setw(8) << Blocks_Count() << endl;
     os << "  Ifaces Count         : " << setw(8) << Ifaces_Count() << endl;
     os << "  Cells Count          : " << setw(8) << cc << endl;
-    os << "  Shadow Cells Count   : " << setw(8) << scc << endl;
-    os << "  Shadow Cells Percent : " << setw(8) << setprecision(2) << fixed
-                                      << (100.0 * scc / cc) << " %" << endl;
     os << "  Inner Cells Count    : " << setw(8) << icc << endl;
     os << "  Inner Cells Percent  : " << setw(8) << setprecision(2) << fixed
                                       << (100.0 * icc / cc) << " %" << endl;
     os << "  Border Cells Count   : " << setw(8) << bcc << endl;
     os << "  Border Cells Percent : " << setw(8) << setprecision(2) << fixed
                                       << (100.0 * bcc / cc) << " %" << endl;
+    os << "  Iface Cells Count    : " << setw(8) << ifcc << endl;
+    os << "  Iface Cells Percent  : " << setw(8) << setprecision(2) << fixed
+                                      << (100.0 * ifcc / cc) << " %" << endl;
+    os << " Shadow Cells Count    : " << setw(8) << scc << endl;
+    os << " Shadow Cells Percent  : " << setw(8) << setprecision(2) << fixed
+                                      << (100.0 * scc / cc) << " %" << endl;
+    os << "     MPI Cells Count   : " << setw(8) << mcc << endl;
+    os << "     MPI Cells Percent : " << setw(8) << setprecision(2) << fixed
+                                      << (100.0 * mcc / cc) << " %" << endl;
 }
 
 /**
@@ -683,9 +734,9 @@ void Grid::Print_Statistics(ostream &os)
  *
  * \param[in] os - stream
  */
-void Grid::Print_Blocks_Distribution(ostream &os)
+void Grid::Print_Blocks_Distribution(ostream &os, int ranks)
 {
-    int ranks = Lib::MPI::Ranks_Count();
+//    int ranks = Lib::MPI::Ranks_Count();
 
     os << "Blocks distribution:" << endl;
 
@@ -696,8 +747,12 @@ void Grid::Print_Blocks_Distribution(ostream &os)
      * - blocks percent,
      * - cells count,
      * - cells percent,
+     * - interface cells count,
+     * - interface cells percent,
      * - shadow cells count,
-     * - shadow cells percent.
+     * - shadwo cells percent,
+     * - MPI cells count,
+     * - MPI cells percent.
      */
 
     /**
@@ -714,8 +769,12 @@ void Grid::Print_Blocks_Distribution(ostream &os)
                   Blocks_Percent(0.0),
                   Cells_Count(0),
                   Cells_Percent(0.0),
+                  Iface_Cells_Count(0),
+                  Iface_Cells_Percent(0.0),
                   Shadow_Cells_Count(0),
-                  Shadow_Cells_Percent(0.0)
+                  Shadow_Cells_Percent(0.0),
+                  MPI_Cells_Count(0),
+                  MPI_Cells_Percent(0.0)
             {}
 
             // Print.
@@ -725,19 +784,25 @@ void Grid::Print_Blocks_Distribution(ostream &os)
                    << " | " << setw(6) << setprecision(2) << fixed << Blocks_Percent
                    << " % | " << setw(8) << Cells_Count
                    << " | " << setw(6) << setprecision(2) << fixed << Cells_Percent
+                   << " % | " << setw(8) << Iface_Cells_Count
+                   << " | " << setw(6) << setprecision(2) << fixed << Iface_Cells_Percent
                    << " % | " << setw(8) << Shadow_Cells_Count
                    << " | " << setw(6) << setprecision(2) << fixed << Shadow_Cells_Percent
+                   << " % | " << setw(8) << MPI_Cells_Count
+                   << " | " << setw(6) << setprecision(2) << fixed << MPI_Cells_Percent
                    << " % |" << endl;
             }
 
             // Statistic fields.
             int Process_Number,
-                Blocks_Count, Cells_Count, Shadow_Cells_Count;
-            double Blocks_Percent, Cells_Percent, Shadow_Cells_Percent;
+                Blocks_Count, Cells_Count, Iface_Cells_Count,
+                Shadow_Cells_Count, MPI_Cells_Count;
+            double Blocks_Percent, Cells_Percent, Iface_Cells_Percent,
+                   Shadow_Cells_Percent, MPI_Cells_Percent;
     };
 
     // Array of statistic elements.
-    Stat *m = new Stat[ranks + 3];
+    Stat *m = new Stat[ranks + 4];
 
     // Set processec numbers.
     for (int i = 0; i < ranks; i++)
@@ -753,16 +818,33 @@ void Grid::Print_Blocks_Distribution(ostream &os)
         Block *p = Get_Block(i);
         int r = p->Rank();
         int cc = p->Cells_Count();
+        int icc = p->Iface_Cells_Count();
         int scc = p->Shadow_Cells_Count();
 
         m[r].Blocks_Count++;
         m[r].Cells_Count += cc;
+        m[r].Iface_Cells_Count += icc;
         m[r].Shadow_Cells_Count += scc;
 
         // total
         m[ranks].Blocks_Count++;
         m[ranks].Cells_Count += cc;
+        m[ranks].Iface_Cells_Count += icc;
         m[ranks].Shadow_Cells_Count += scc;
+    }
+
+    // Find MPI cells.
+    for (int i = 0; i < Ifaces_Count(); i++)
+    {
+        Iface *p = Get_Iface(i);
+        int r = p->B()->Rank();
+        int cc = p->Cells_Count() * HYDRO_GRID_SHADOW_DEPTH;
+
+        if (r != p->NB()->Rank())
+        {
+            m[r].MPI_Cells_Count += cc;
+            m[ranks].MPI_Cells_Count += cc;
+        }
     }
 
     // Set min/max.
@@ -770,10 +852,14 @@ void Grid::Print_Blocks_Distribution(ostream &os)
     {
         m[ranks + 1].Blocks_Count = m[0].Blocks_Count;
         m[ranks + 1].Cells_Count = m[0].Cells_Count;
+        m[ranks + 1].Iface_Cells_Count = m[0].Iface_Cells_Count;
         m[ranks + 1].Shadow_Cells_Count = m[0].Shadow_Cells_Count;
+        m[ranks + 1].MPI_Cells_Count = m[0].MPI_Cells_Count;
         m[ranks + 2].Blocks_Count = m[0].Blocks_Count;
         m[ranks + 2].Cells_Count = m[0].Cells_Count;
+        m[ranks + 2].Iface_Cells_Count = m[0].Iface_Cells_Count;
         m[ranks + 2].Shadow_Cells_Count = m[0].Shadow_Cells_Count;
+        m[ranks + 2].MPI_Cells_Count = m[0].MPI_Cells_Count;
     }
     for (int i = 1; i < ranks; i++)
     {
@@ -785,9 +871,17 @@ void Grid::Print_Blocks_Distribution(ostream &os)
         {
             m[ranks + 1].Cells_Count = m[i].Cells_Count;
         }
+        if (m[i].Iface_Cells_Count < m[ranks + 1].Iface_Cells_Count)
+        {
+            m[ranks + 1].Iface_Cells_Count = m[i].Iface_Cells_Count;
+        }
         if (m[i].Shadow_Cells_Count < m[ranks + 1].Shadow_Cells_Count)
         {
             m[ranks + 1].Shadow_Cells_Count = m[i].Shadow_Cells_Count;
+        }
+        if (m[i].MPI_Cells_Count < m[ranks + 1].MPI_Cells_Count)
+        {
+            m[ranks + 1].MPI_Cells_Count = m[i].MPI_Cells_Count;
         }
         if (m[i].Blocks_Count > m[ranks + 2].Blocks_Count)
         {
@@ -797,9 +891,17 @@ void Grid::Print_Blocks_Distribution(ostream &os)
         {
             m[ranks + 2].Cells_Count = m[i].Cells_Count;
         }
+        if (m[i].Iface_Cells_Count > m[ranks + 2].Iface_Cells_Count)
+        {
+            m[ranks + 2].Iface_Cells_Count = m[i].Iface_Cells_Count;
+        }
         if (m[i].Shadow_Cells_Count > m[ranks + 2].Shadow_Cells_Count)
         {
             m[ranks + 2].Shadow_Cells_Count = m[i].Shadow_Cells_Count;
+        }
+        if (m[i].MPI_Cells_Count > m[ranks + 2].MPI_Cells_Count)
+        {
+            m[ranks + 2].MPI_Cells_Count = m[i].MPI_Cells_Count;
         }
     }
 
@@ -812,30 +914,51 @@ void Grid::Print_Blocks_Distribution(ostream &os)
         m[i].Cells_Percent = (m[ranks].Cells_Count != 0)
                              ? (100.0 * m[i].Cells_Count / m[ranks].Cells_Count)
                              : 0.0;
-        m[i].Shadow_Cells_Percent = (m[ranks].Shadow_Cells_Count != 0)
-                                    ? (100.0 * m[i].Shadow_Cells_Count
-                                       / m[ranks].Shadow_Cells_Count)
+        m[i].Iface_Cells_Percent = (m[ranks].Iface_Cells_Count != 0)
+                                    ? (100.0 * m[i].Iface_Cells_Count
+                                       / m[ranks].Iface_Cells_Count)
                                     : 0.0;
+        m[i].Shadow_Cells_Percent = (m[ranks].Shadow_Cells_Count != 0)
+                                     ? (100.0 * m[i].Shadow_Cells_Count
+                                        / m[ranks].Shadow_Cells_Count)
+                                     : 0.0;
+        m[i].MPI_Cells_Percent = (m[ranks].MPI_Cells_Count != 0)
+                                 ? (100.0 * m[i].MPI_Cells_Count / m[ranks].MPI_Cells_Count)
+                                 : 0.0;
     }
 
+    // Set mean.
+    m[ranks + 3].Blocks_Count = m[ranks].Blocks_Count / ranks;
+    m[ranks + 3].Blocks_Percent = m[ranks].Blocks_Percent / ranks;
+    m[ranks + 3].Cells_Count = m[ranks].Cells_Count / ranks;
+    m[ranks + 3].Cells_Percent = m[ranks].Cells_Percent / ranks;
+    m[ranks + 3].Iface_Cells_Count = m[ranks].Iface_Cells_Count / ranks;
+    m[ranks + 3].Iface_Cells_Percent = m[ranks].Iface_Cells_Percent / ranks;
+    m[ranks + 3].Shadow_Cells_Count = m[ranks].Shadow_Cells_Count / ranks;
+    m[ranks + 3].Shadow_Cells_Percent = m[ranks].Shadow_Cells_Percent / ranks;
+    m[ranks + 3].MPI_Cells_Count = m[ranks].MPI_Cells_Count / ranks;
+    m[ranks + 3].MPI_Cells_Percent = m[ranks].MPI_Cells_Percent / ranks;
+
     // Print result.
-    os << "*----------*----------*----------*----------*----------*----------*----------*" << endl;
-    os << "| Process  | Blocks   | Blocks   | Cells    | Cells    | S. Cells | S. Cells |" << endl;
-    os << "|   Number |    Count |  Percent |    Count |  Percent |    Count |  Percent |" << endl;
-    os << "*----------*----------*----------*----------*----------*----------*----------*" << endl;
+    os << "*----------*----------*----------*----------*----------*----------*----------*----------*----------*----------*----------*" << endl;
+    os << "| Process  | Blocks   | Blocks   | Cells    | Cells    | I. Cells | I. Cells | S. Cells | S. Cells | MPI Cls. | MPI Cls. |" << endl;
+    os << "|   Number |    Count |  Percent |    Count |  Percent |    Count |  Percent |    Count |  Percent |    Count |  Percent |" << endl;
+    os << "*----------*----------*----------*----------*----------*----------*----------*----------*----------*----------*----------*" << endl;
     for (int i = 0; i < ranks; i++)
     {
         os << "| " << setw(8) << m[i].Process_Number;
         m[i].Print(os);
     }
-    os << "*----------*----------*----------*----------*----------*----------*----------*" << endl;
+    os << "*----------*----------*----------*----------*----------*----------*----------*----------*----------*----------*----------*" << endl;
     os << "| " << setw(8) << "total";
     m[ranks].Print(os);
     os << "| " << setw(8) << "min";
     m[ranks + 1].Print(os);
     os << "| " << setw(8) << "max";
     m[ranks + 2].Print(os);
-    os << "*----------*----------*----------*----------*----------*----------*----------*" << endl;
+    os << "| " << setw(8) << "mean";
+    m[ranks + 3].Print(os);
+    os << "*----------*----------*----------*----------*----------*----------*----------*----------*----------*----------*----------*" << endl;
 
     // Free memory.
     delete m;

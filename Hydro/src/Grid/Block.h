@@ -52,9 +52,10 @@ public:
     int Bytes_Count() const;
     int Facet_Size(int direction) const { return Facets_p_[direction]->Size(); }
     int Surface_Area() const;
+    int Iface_Cells_Count() const;
     int Shadow_Cells_Count() const;
     int Inner_Cells_Count() const;
-    int Border_Cells_Count() const;
+    int Border_Cells_Count() const { Cells_Count() - Inner_Cells_Count(); };
     int Rank() const { return Rank_; }
     bool Is_Active() const { return Rank() == Lib::MPI::Rank(); }
     void Set_Rank(int rank) { Rank_ = rank; }

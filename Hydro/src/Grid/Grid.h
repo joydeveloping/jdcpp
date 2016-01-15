@@ -36,9 +36,11 @@ public:
     Block *Get_Block(int n) const { return Blocks_p_[n]; }
     Iface *Get_Iface(int n) const { return Ifaces_p_[n]; }
     int Cells_Count() const;
+    int Iface_Cells_Count() const;
     int Shadow_Cells_Count() const;
     int Inner_Cells_Count() const;
     int Border_Cells_Count() const;
+    int MPI_Cells_Count() const;
 
     // Load and create Grid.
     bool Load_GEOM(const string name, int ranks_count);
@@ -58,7 +60,7 @@ public:
     void Print_Timers(ostream &os);
     void Print_Timers() { Print_Timers(cout); }
     void Print_Statistics(ostream &os);
-    void Print_Blocks_Distribution(ostream &os);
+    void Print_Blocks_Distribution(ostream &os, int ranks);
 
 private:
 
