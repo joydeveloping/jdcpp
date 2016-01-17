@@ -916,14 +916,14 @@ void Grid::Print_Blocks_Distribution(ostream &os, int ranks)
                              : 0.0;
         m[i].Iface_Cells_Percent = (m[ranks].Iface_Cells_Count != 0)
                                     ? (100.0 * m[i].Iface_Cells_Count
-                                       / m[ranks].Iface_Cells_Count)
+                                       / m[ranks].Cells_Count)
                                     : 0.0;
         m[i].Shadow_Cells_Percent = (m[ranks].Shadow_Cells_Count != 0)
                                      ? (100.0 * m[i].Shadow_Cells_Count
-                                        / m[ranks].Shadow_Cells_Count)
+                                        / m[ranks].Cells_Count)
                                      : 0.0;
         m[i].MPI_Cells_Percent = (m[ranks].MPI_Cells_Count != 0)
-                                 ? (100.0 * m[i].MPI_Cells_Count / m[ranks].MPI_Cells_Count)
+                                 ? (100.0 * m[i].MPI_Cells_Count / m[ranks].Cells_Count)
                                  : 0.0;
     }
 
