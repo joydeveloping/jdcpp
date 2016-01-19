@@ -5,13 +5,13 @@
  * \author Alexey Rybakov
  */
 
-#include "Grid/Grid.h"
 #include "Lib/MPI/mpi.h"
+#include "Grid/Grid.h"
 
 /**
  * \brief Name of grid.
  */
-#define GRID_NAME "/home/rybakov/Data/Grids/grid_for_test_50"
+#define GRID_NAME "/home1/rybakov/Data/Grids/grid_for_test_50"
 
 using namespace Hydro::Grid;
 
@@ -40,8 +40,8 @@ int Run(int ranks_count,
     // General action.
     Grid *grid_p = new Grid();
     grid_p->Load_GEOM(GRID_NAME, ranks_count);
-    out << grid_p;
-    grid_p->Calculate_Iterations(1000);
+    //out << grid_p;
+    grid_p->Calculate_Iterations(100);
     grid_p->Print_Timers(out);
     grid_p->Print_Statistics(out);
     grid_p->Print_Blocks_Distribution(out, ranks_count);

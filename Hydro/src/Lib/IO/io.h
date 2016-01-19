@@ -8,6 +8,7 @@
 #ifndef LIB_IO_IO_H
 #define LIB_IO_IO_H
 
+#include <mpi.h>
 #include <iostream>
 #include <fstream>
 #include <iomanip>

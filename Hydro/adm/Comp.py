@@ -48,11 +48,11 @@ if (arg == "-h"):
     Print_Help()
 elif (arg == "local"):
     cmds = ["rm -f hydro.*",
-            "mpic++ -g -DDEBUG " + srcs + " -I./src -o hydro.local -lm"]
+            "mpicc -O3 " + srcs + " -I./src -o hydro.local -lm"]
 elif (arg == "mvs"):
     cmds = ["rm -f hydro.*",
-            "mpic++ -g -DDEBUG " + srcs + " -I./src -o hydro.local -lm",
-            "mpic++ -g -DDEBUG " + srcs + " -I./src -o hydro.mvs.mic -mmic -lm"]
+            "mpicc -O3 " + srcs + " -I./src -o hydro.mvs -lm",
+            "mpicc -O3 " + srcs + " -I./src -o hydro.mvs.mic -mmic -lm"]
 else:
     assert(False)
 

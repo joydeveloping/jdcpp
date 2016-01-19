@@ -8,8 +8,8 @@
 #ifndef HYDRO_GRID_BLOCK_H
 #define HYDRO_GRID_BLOCK_H
 
-#include "Lib/IO/io.h"
 #include "Lib/MPI/mpi.h"
+#include "Lib/IO/io.h"
 #include "Direction.h"
 #include "Facet.h"
 #include "Facet_I.h"

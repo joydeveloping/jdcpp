@@ -5,11 +5,11 @@
  * \author Alexey Rybakov
  */
 
+#include <mpi.h>
 #include <fstream>
 #include <cassert>
 #include <vector>
 #include "Lib/MPI/mpi.h"
-#include "mpi.h"
 #include "Grid.h"
 
 namespace Hydro { namespace Grid {
@@ -609,7 +609,9 @@ void Grid::Calculate_Iterations(int n)
 {
     for (int i = 0; i < n; i++)
     {
+	cout << setw(3) << Lib::MPI::Rank() << " | iter: " << setw(5) << i;
         Calculate_Iteration();
+        cout << " : done" << endl;
     }
 }
 
@@ -666,10 +668,10 @@ void Grid::Ifaces_MPI_Data_Exchange()
                 i += 2;
             }
         }
-
-        // Wait all requests.
-        MPI_Waitall(reqs_count, reqs, stats);
     }
+
+    // Wait all requests.
+    MPI_Waitall(reqs_count, reqs, stats);
 
     Timer_Shadow_Exchange()->Stop();
 }
