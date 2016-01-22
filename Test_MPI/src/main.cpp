@@ -12,8 +12,8 @@
 /*
  * Prototypes.
  */
-void Test_N_To_N_Exchange();
-void Test_N_To_0_To_N_Exchange();
+void Test_N_To_N_Exchange(int size);
+void Test_N_To_0_To_N_Exchange(int size);
 
 /**
  * \brief Enter point.
@@ -33,11 +33,17 @@ int main(int argc, char **argv)
     string test(argv[1]);
     if (test == "n_to_n_exchange")
     {
-        Test_N_To_N_Exchange();
+        for (int i = 10; i <= 10000; i += 10)
+        {
+            Test_N_To_N_Exchange(i);
+        }
     }
     else if (test == "n_to_0_to_n_exchange")
     {
-        Test_N_To_0_To_N_Exchange();
+        for (int i = 10; i <= 10000; i += 10)
+        {
+            Test_N_To_0_To_N_Exchange(i);
+        }
     }
 
     MPI_Finalize();
@@ -47,6 +53,8 @@ int main(int argc, char **argv)
 
 /**
  * \brief Test exchange data N to N.
+ *
+ * \param[in] size - size of data (in integers)
  *
  * We have N processes.
  * Each process has array of data (N * size * int).
@@ -58,13 +66,12 @@ int main(int argc, char **argv)
  * ...                                 ...                      ...
  * pn : [*..*|*..*| ... |n..n]         [pn -> p0 p1 ... __]     pn : [0..0|1..1| ... |n..n]
  */
-void Test_N_To_N_Exchange()
+void Test_N_To_N_Exchange(int size)
 {
-    const int size = 10000;
     const int rank = Lib::MPI::Rank();
     const int ranks_count = Lib::MPI::Ranks_Count();
     const int full_size = ranks_count * size;
-    const int iters = 1000;
+    const int iters = 100;
     int *data = new int[full_size];
     Lib::MPI::Timer *timer = new Lib::MPI::Timer();
     MPI_Request *reqs = new MPI_Request[2 * ranks_count];
@@ -114,7 +121,10 @@ void Test_N_To_N_Exchange()
     }
 
     // Print.
-    cout << "Time : " << timer->Time() << endl;
+    if (rank == 0)
+    {
+        cout << "Time " << size << ": " << timer->Time() << endl;
+    }
 
     delete stats;
     delete reqs;
@@ -124,6 +134,8 @@ void Test_N_To_N_Exchange()
 
 /**
  * \brief Test exchange data N to N through 0 process.
+ *
+ * \param[in] size - size of data (in integers)
  *
  * We have N processes.
  * Each process has array of data (N * size * int).
@@ -141,13 +153,12 @@ void Test_N_To_N_Exchange()
  *                                                          ...
  *                                                          pn : [0..0|1..1| ... |n..n]
  */
-void Test_N_To_0_To_N_Exchange()
+void Test_N_To_0_To_N_Exchange(int size)
 {
-    const int size = 10000;
     const int rank = Lib::MPI::Rank();
     const int ranks_count = Lib::MPI::Ranks_Count();
     const int full_size = ranks_count * size;
-    const int iters = 1000;
+    const int iters = 100;
     int *data = new int[full_size];
     Lib::MPI::Timer *timer = new Lib::MPI::Timer();
     MPI_Request *reqs = new MPI_Request[ranks_count];
@@ -220,7 +231,10 @@ void Test_N_To_0_To_N_Exchange()
     }
 
     // Print.
-    cout << "Time : " << timer->Time() << endl;
+    if (rank == 0)
+    {
+        cout << "Time " << size << ": " << timer->Time() << endl;
+    }
 
     delete stats;
     delete reqs;

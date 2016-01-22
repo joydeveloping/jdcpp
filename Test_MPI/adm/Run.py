@@ -99,7 +99,7 @@ def Run_Single(t, d, pc):
         cmds = ["cd %s" % subdir,
                 "cp %s/test_mpi.mvs ." % cwd,
                 "cp %s/test_mpi.mvs.mic ."  % cwd,
-                "mpirun -np %d -machinefile hosts -mic -maxtime 30 test_mpi.mvs %s" % (pc, t),
+                "mpirun -np %d -machinefile hosts -mic -maxtime 180 test_mpi.mvs %s" % (pc, t),
                 "cd %s" % cwd]
     else:
         assert(false)
