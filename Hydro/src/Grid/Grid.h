@@ -44,6 +44,12 @@ public:
 
     // Load and create Grid.
     bool Load_GEOM(const string name, int ranks_count);
+    void Create_Solid_Descartes(int i_size,
+                                int j_size,
+                                int k_size,
+                                double i_real_size,
+                                double j_real_size,
+                                double k_real_size);
 
     // Blocks ranks balancing.
     void Set_Blocks_Ranks_Circular_Distribution(int ranks_count);
@@ -60,6 +66,7 @@ public:
     void Print_Timers(ostream &os);
     void Print_Timers() { Print_Timers(cout); }
     void Print_Statistics(ostream &os);
+    void Print_Statistics() { Print_Statistics(cout); }
     void Print_Blocks_Distribution(ostream &os, int ranks);
 
 private:

@@ -45,6 +45,8 @@ Block::Block(int id,
       Ro_(NULL),
       P_(NULL)
 {
+    Allocate_Memory();
+
     for (int i = 0; i < Direction::Count; i++)
     {
         Facets_p_[i] = NULL;
@@ -333,18 +335,18 @@ bool Block::Allocate_Memory()
 
     Deallocate_Memory();
 
-    //NX_ = new double[nodes_count];
-    //NY_ = new double[nodes_count];
-    //NZ_ = new double[nodes_count];
-    //CX_ = new double[cells_count];
-    //CY_ = new double[cells_count];
-    //CZ_ = new double[cells_count];
-    //VX_ = new double[cells_count];
-    //VY_ = new double[cells_count];
-    //VZ_ = new double[cells_count];
-    //T_ = new double[cells_count];
-    //Ro_ = new double[cells_count];
-    //P_ = new double[cells_count];
+    NX_ = new double[nodes_count];
+    NY_ = new double[nodes_count];
+    NZ_ = new double[nodes_count];
+    CX_ = new double[cells_count];
+    CY_ = new double[cells_count];
+    CZ_ = new double[cells_count];
+    VX_ = new double[cells_count];
+    VY_ = new double[cells_count];
+    VZ_ = new double[cells_count];
+    T_ = new double[cells_count];
+    Ro_ = new double[cells_count];
+    P_ = new double[cells_count];
 
     return (NX_ != NULL)
            && (NY_ != NULL)
@@ -423,6 +425,75 @@ void Block::Deallocate_Memory()
     if (P_ != NULL)
     {
         delete P_;
+    }
+}
+
+/**
+ * Construct block.
+ */
+
+/**
+ * \brief Construct solid descartes block.
+ *
+ * \param[in] i_real_size - size in i direction
+ * \param[in] j_real_size - size in j direction
+ * \param[in] k_real_size - size in k direction
+ */
+void Block::Create_Solid_Descartes(double i_real_size,
+                                   double j_real_size,
+                                   double k_real_size)
+{
+    int i_size = I_Size();
+    int j_size = J_Size();
+    int k_size = K_Size();
+    int cells_count = Cells_Count();
+    int ij_size = i_size * j_size;
+    double di = i_real_size / i_size;
+    double dj = j_real_size / j_size;
+    double dk = k_real_size / k_size;
+    int ind = 0;
+
+    // Nodes coordinates.
+    for (int k = 0; k <= k_size; k++)
+    {
+        for (int j = 0; j <= j_size; j++)
+        {
+            for (int i = 0; i <= i_size; i++)
+            {
+                ind = k * ((i_size + 1) * (j_size + 1)) + j * (i_size + 1) + i;
+
+                NX_[ind] = di * i;
+                NY_[ind] = dj * j;
+                NZ_[ind] = dk * k;
+            }
+        }
+    }
+
+    // Centers coordinates.
+    for (int k = 0; k < k_size; k++)
+    {
+        for (int j = 0; j < j_size; j++)
+        {
+            for (int i = 0; i < i_size; j++)
+            {
+                ind = k * i_size * j_size + j * i_size + i;
+
+                CX_[ind] = di * (i + 0.5);
+                CY_[ind] = dj * (j + 0.5);
+                CZ_[ind] = dk * (k + 0.5);
+            }
+        }
+    }
+
+    // Characteristics.
+    for (int i = 0; i < cells_count; i++)
+    {
+        VX_[i] = 0.0;
+        VY_[i] = 0.0;
+        VZ_[i] = 0.0;
+        T_[i] = 300.0;
+        Ro_[i] = 0.001;
+        P_[i] = 1000.0;
     }
 }
 

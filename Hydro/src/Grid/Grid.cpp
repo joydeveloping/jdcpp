@@ -460,6 +460,35 @@ void Grid::Set_Ifaces_To_Facets()
     }
 }
 
+/**
+ * \brief Create Descartes grid with real sizes.
+ *
+ * We create grid where i - is x direction, j - y direction, k - z direction.
+ * X interval is [0, i_real_size],
+ * Y interval is [0, j_real_size],
+ * Z interval is [0, k_real_size].
+ *
+ * \param[in] i_size - cells count in i direction
+ * \param[in] j_size - cells count in j direction
+ * \param[in] k_size - cells count in k direction
+ * \param[in] i_real_size - size in meters in i direction
+ * \param[in] j_real_size - size in meters in j direction
+ * \param[in] k_real_size - size in meters in k direction
+ */
+void Grid::Create_Solid_Descartes(int i_size,
+                                  int j_size,
+                                  int k_size,
+                                  double i_real_size,
+                                  double j_real_size,
+                                  double k_real_size)
+{
+    Block *b_p = NULL;
+
+    // Our grid has 1 block and no interfaces.
+    Allocate_Blocks_Pointers(1);
+    Blocks_p_[0] = new Block(0, i_size, j_size, k_size);
+}
+
 /*
  * Information.
  */
@@ -676,7 +705,7 @@ void Grid::Ifaces_MPI_Data_Exchange()
                 // Self block is active, neighbour is not.
                 // We have to receive data from neighbour block process.
 
-                MPI_Irecv(p->MPI_Buffer(), p->Buffer_Floats_Count(), MPI_FLOAT,
+                MPI_Irecv(p->MPI_Buffer(), p->Buffer_Doubles_Count(), MPI_FLOAT,
                           p->NB()->Rank(), p->Id(), MPI_COMM_WORLD, &reqs[reqs_count++]);
                 i++;
             }
@@ -687,7 +716,7 @@ void Grid::Ifaces_MPI_Data_Exchange()
             {
                 // Neighbour block is active, self is not.
                 // We have to send data to self block process.
-                MPI_Isend(p->MPI_Buffer(), p->Buffer_Floats_Count(), MPI_FLOAT,
+                MPI_Isend(p->MPI_Buffer(), p->Buffer_Doubles_Count(), MPI_FLOAT,
                           p->B()->Rank(), p->Id(), MPI_COMM_WORLD, &reqs[reqs_count++]);
                 i++;
             }

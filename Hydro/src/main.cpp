@@ -50,6 +50,21 @@ int Run(int ranks_count,
 }
 
 /**
+ * \brief Run solid descartes test.
+ */
+int Run_Solid_Descartes()
+{
+    Grid *grid_p = new Grid();
+
+    grid_p->Create_Solid_Descartes(10, 10, 10, 1.0, 1.0, 1.0);
+
+    // Print out.
+    grid_p->Print_Statistics();
+
+    delete grid_p;
+}
+
+/**
  * \brief Main function (enter point).
  *
  * \return
@@ -58,7 +73,7 @@ int Run(int ranks_count,
 int main(int argc, char **argv)
 {
     MPI_Init(&argc, &argv);
-    Run(Lib::MPI::Ranks_Count(), Lib::MPI::Rank());
+    Run_Solid_Descartes();
     MPI_Finalize();
 
     return 0;

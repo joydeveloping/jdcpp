@@ -65,6 +65,11 @@ public:
     bool Allocate_Memory();
     void Deallocate_Memory();
 
+    // Construct block.
+    void Create_Solid_Descartes(double i_real_size,
+                                double j_real_size,
+                                double k_real_size);
+
 private:
 
     // Identifier.
