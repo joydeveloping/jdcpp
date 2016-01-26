@@ -106,7 +106,7 @@ int Block::Bytes_Count() const
     // NX_, NY_, NZ_ - nodes_count
     // CX_, CY_, CZ_, VX_, VY_, VZ_, T_, Ro_, P_ - cells_count
 
-    return (3 * Nodes_Count() + 9 * Cells_Count()) * sizeof(float);
+    return (3 * Nodes_Count() + 9 * Cells_Count()) * sizeof(double);
 }
 
 /**
@@ -333,18 +333,18 @@ bool Block::Allocate_Memory()
 
     Deallocate_Memory();
 
-    //NX_ = new float[nodes_count];
-    //NY_ = new float[nodes_count];
-    //NZ_ = new float[nodes_count];
-    //CX_ = new float[cells_count];
-    //CY_ = new float[cells_count];
-    //CZ_ = new float[cells_count];
-    //VX_ = new float[cells_count];
-    //VY_ = new float[cells_count];
-    //VZ_ = new float[cells_count];
-    //T_ = new float[cells_count];
-    //Ro_ = new float[cells_count];
-    //P_ = new float[cells_count];
+    //NX_ = new double[nodes_count];
+    //NY_ = new double[nodes_count];
+    //NZ_ = new double[nodes_count];
+    //CX_ = new double[cells_count];
+    //CY_ = new double[cells_count];
+    //CZ_ = new double[cells_count];
+    //VX_ = new double[cells_count];
+    //VY_ = new double[cells_count];
+    //VZ_ = new double[cells_count];
+    //T_ = new double[cells_count];
+    //Ro_ = new double[cells_count];
+    //P_ = new double[cells_count];
 
     return (NX_ != NULL)
            && (NY_ != NULL)

@@ -85,20 +85,20 @@ private:
      */
 
     // Nodes coordinates.
-    float *NX_, *NY_, *NZ_;
+    double *NX_, *NY_, *NZ_;
 
     // Center coordinates.
-    float *CX_, *CY_, *CZ_;
+    double *CX_, *CY_, *CZ_;
 
     /*
      * Area of dynamic data.
      */
 
     // Velocity vector.
-    float *VX_, *VY_, *VZ_;
+    double *VX_, *VY_, *VZ_;
 
     // Hydrodynamic characteristics (temperature, density, pressure).
-    float *T_, *Ro_, *P_;
+    double *T_, *Ro_, *P_;
 
     // Init.
     void Create_Facets();

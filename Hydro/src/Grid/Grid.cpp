@@ -54,6 +54,36 @@ void Grid::Init_Timers()
  */
 
 /**
+ * \brief Get block.
+ *
+ * \param[in] n - block number.
+ *
+ * \return
+ * Block.
+ */
+Block *Grid::Get_Block(int n) const
+{
+    assert((n >= 0) && (n < Blocks_Count_));
+
+    return Blocks_p_[n];
+}
+
+/**
+ * \brief Get interface.
+ *
+ * \param[in] n - interface number.
+ *
+ * \return
+ * Interface.
+ */
+Iface *Grid::Get_Iface(int n) const
+{
+    assert((n >= 0) && (n < Ifaces_Count_));
+
+    return Ifaces_p_[n];
+}
+
+/**
  * \brief Get cells count.
  *
  * \return
@@ -154,11 +184,11 @@ int Grid::MPI_Cells_Count() const
 
         if (p->B()->Rank() != p->NB()->Rank())
         {
-            c += p->Cells_Count() * HYDRO_GRID_SHADOW_DEPTH;
+            c += p->Cells_Count();
         }
     }
 
-    return c;
+    return c * HYDRO_GRID_SHADOW_DEPTH;
 }
 
 /*
@@ -609,7 +639,7 @@ void Grid::Calculate_Iterations(int n)
 {
     for (int i = 0; i < n; i++)
     {
-	cout << setw(3) << Lib::MPI::Rank() << " | iter: " << setw(5) << i;
+        cout << setw(3) << Lib::MPI::Rank() << " | iter: " << setw(5) << i;
         Calculate_Iteration();
         cout << " : done" << endl;
     }

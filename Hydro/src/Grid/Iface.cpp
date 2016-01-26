@@ -117,7 +117,7 @@ void Iface::Set_Direction()
 bool Iface::Allocate_Buffer()
 {
     Deallocate_Buffer();
-    Buffer_p_ = new float[Buffer_Floats_Count()];
+    Buffer_p_ = new double[Buffer_Doubles_Count()];
 
     return Buffer_p_ != NULL;
 }
@@ -237,9 +237,9 @@ ostream &operator<<(ostream &os,
  *
  * \param[in] v - value
  */
-void Iface::Set_Buffer_Value(float v)
+void Iface::Set_Buffer_Value(double v)
 {
-    int n = Buffer_Floats_Count();
+    int n = Buffer_Doubles_Count();
 
     for (int i = 0; i < n; i++)
     {
@@ -254,13 +254,14 @@ void Iface::Set_Buffer_Value(float v)
  * true - if all values in buffer are equal to given value,
  * false - if not all values in buffer are equal to given value.
  */
-bool Iface::Check_Buffer_Value(float v, float eps)
+bool Iface::Check_Buffer_Value(double v,
+                               double eps)
 {
-    int n = Buffer_Floats_Count();
+    int n = Buffer_Doubles_Count();
 
     for (int i = 0; i < n; i++)
     {
-        float b = Buffer_p_[i];
+        double b = Buffer_p_[i];
 
         if (fabs(b - v) > eps)
         {

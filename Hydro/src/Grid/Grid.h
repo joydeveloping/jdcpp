@@ -33,8 +33,8 @@ public:
     int Blocks_Count() const { return Blocks_Count_; }
     int Ifaces_Count() const { return Ifaces_Count_; }
     bool Is_Empty() const { return Blocks_Count() == 0; }
-    Block *Get_Block(int n) const { return Blocks_p_[n]; }
-    Iface *Get_Iface(int n) const { return Ifaces_p_[n]; }
+    Block *Get_Block(int n) const;
+    Iface *Get_Iface(int n) const;
     int Cells_Count() const;
     int Iface_Cells_Count() const;
     int Shadow_Cells_Count() const;

@@ -51,9 +51,9 @@ public:
     bool Is_MPI() const;
     int Cells_Count() const;
     int Buffer_Cells_Count() const;
-    int Buffer_Floats_Count() const { return Buffer_Cells_Count()
-                                             * HYDRO_GRID_DYNAMIC_FLOATS_PER_CELL; }
-    int Buffer_Bytes_Count() const { return Buffer_Floats_Count() * sizeof(float); }
+    int Buffer_Doubles_Count() const { return Buffer_Cells_Count()
+                                              * HYDRO_GRID_DYNAMIC_DOUBLES_PER_CELL; }
+    int Buffer_Bytes_Count() const { return Buffer_Doubles_Count() * sizeof(double); }
     void *MPI_Buffer() { return static_cast<void *>(Buffer_p_); }
 
     // From parent.
@@ -61,8 +61,9 @@ public:
     bool Is_BCond() const { return false; }
 
     // Additional functions.
-    void Set_Buffer_Value(float v);
-    bool Check_Buffer_Value(float v, float eps);
+    void Set_Buffer_Value(double v);
+    bool Check_Buffer_Value(double v,
+                            double eps);
 
 private:
 
@@ -82,7 +83,7 @@ private:
     int Direction_;
 
     // Buffer.
-    float *Buffer_p_;
+    double *Buffer_p_;
 
     // Allocate/deallocate memory.
     bool Allocate_Buffer();
