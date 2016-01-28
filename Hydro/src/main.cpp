@@ -7,6 +7,7 @@
 
 #include "Lib/MPI/mpi.h"
 #include "Grid/Grid.h"
+#include "Solver/Godunov_1.h"
 
 /**
  * \brief Name of grid.
@@ -14,6 +15,7 @@
 #define GRID_NAME "/home1/rybakov/Data/Grids/grid_for_test_50"
 
 using namespace Hydro::Grid;
+using namespace Hydro::Solver;
 
 /**
  * \brief Controlled run.
@@ -55,8 +57,10 @@ int Run(int ranks_count,
 int Run_Solid_Descartes()
 {
     Grid *grid_p = new Grid();
+    Godunov_1 *calculation_p = new Godunov_1(grid_p);
 
     grid_p->Create_Solid_Descartes(10, 10, 10, 1.0, 1.0, 1.0);
+    calculation_p->Calc_Iter(0.001);
 
     // Print out.
     grid_p->Print_Statistics();
