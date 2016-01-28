@@ -35,10 +35,7 @@ Block::Block(int id,
       Cells(NULL),
       NX_(NULL),
       NY_(NULL),
-      NZ_(NULL),
-      CX_(NULL),
-      CY_(NULL),
-      CZ_(NULL)
+      NZ_(NULL)
 {
     Allocate_Memory();
 
@@ -334,16 +331,10 @@ bool Block::Allocate_Memory()
     NX_ = new double[nodes_count];
     NY_ = new double[nodes_count];
     NZ_ = new double[nodes_count];
-    CX_ = new double[cells_count];
-    CY_ = new double[cells_count];
-    CZ_ = new double[cells_count];
 
     return (NX_ != NULL)
            && (NY_ != NULL)
-           && (NZ_ != NULL)
-           && (CX_ != NULL)
-           && (CY_ != NULL)
-           && (CZ_ != NULL);
+           && (NZ_ != NULL);
 }
 
 /**
@@ -369,21 +360,6 @@ void Block::Deallocate_Memory()
     if (NZ_ != NULL)
     {
         delete NZ_;
-    }
-
-    if (CX_ != NULL)
-    {
-        delete CX_;
-    }
-
-    if (CY_ != NULL)
-    {
-        delete CY_;
-    }
-
-    if (CZ_ != NULL)
-    {
-        delete CZ_;
     }
 }
 
@@ -424,22 +400,6 @@ void Block::Create_Solid_Descartes(double i_real_size,
                 NX_[ind] = di * i;
                 NY_[ind] = dj * j;
                 NZ_[ind] = dk * k;
-            }
-        }
-    }
-
-    // Centers coordinates.
-    for (int k = 0; k < k_size; k++)
-    {
-        for (int j = 0; j < j_size; j++)
-        {
-            for (int i = 0; i < i_size; j++)
-            {
-                ind = k * i_size * j_size + j * i_size + i;
-
-                CX_[ind] = di * (i + 0.5);
-                CY_[ind] = dj * (j + 0.5);
-                CZ_[ind] = dk * (k + 0.5);
             }
         }
     }

@@ -96,9 +96,6 @@ private:
     // Nodes coordinates.
     double *NX_, *NY_, *NZ_;
 
-    // Center coordinates.
-    double *CX_, *CY_, *CZ_;
-
     // Init.
     void Create_Facets();
     void Destroy_Facets();
