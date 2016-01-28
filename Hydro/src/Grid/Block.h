@@ -15,6 +15,7 @@
 #include "Facet_I.h"
 #include "Facet_J.h"
 #include "Facet_K.h"
+#include "Cell.h"
 
 using namespace std;
 
@@ -27,6 +28,9 @@ class Block
 {
 
 public:
+
+    // Cells.
+    Cell *Cells;
 
     /*
      * Block interface.
@@ -94,16 +98,6 @@ private:
 
     // Center coordinates.
     double *CX_, *CY_, *CZ_;
-
-    /*
-     * Area of dynamic data.
-     */
-
-    // Velocity vector.
-    double *VX_, *VY_, *VZ_;
-
-    // Hydrodynamic characteristics (temperature, density, pressure).
-    double *T_, *Ro_, *P_;
 
     // Init.
     void Create_Facets();

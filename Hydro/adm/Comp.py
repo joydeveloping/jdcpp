@@ -40,7 +40,7 @@ assert(len(sys.argv) == 2)
 arg = sys.argv[1]
 
 # Compilation parameters.
-srcs = "./src/*.cpp ./src/Grid/*.cpp ../Lib/IO/*.cpp ../Lib/MPI/*.cpp"
+srcs = "./src/*.cpp ./src/Grid/*.cpp ./src/Solver/*.cpp ../Lib/IO/*.cpp ../Lib/MPI/*.cpp ../Lib/Math/*.cpp"
 cmds = []
 
 # Analyze argument.

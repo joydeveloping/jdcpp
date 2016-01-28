@@ -32,18 +32,13 @@ Block::Block(int id,
       J_Size_(j_size),
       K_Size_(k_size),
       Rank_(0),
+      Cells(NULL),
       NX_(NULL),
       NY_(NULL),
       NZ_(NULL),
       CX_(NULL),
       CY_(NULL),
-      CZ_(NULL),
-      VX_(NULL),
-      VY_(NULL),
-      VZ_(NULL),
-      T_(NULL),
-      Ro_(NULL),
-      P_(NULL)
+      CZ_(NULL)
 {
     Allocate_Memory();
 
@@ -335,31 +330,20 @@ bool Block::Allocate_Memory()
 
     Deallocate_Memory();
 
+    Cells = new Cell[cells_count];
     NX_ = new double[nodes_count];
     NY_ = new double[nodes_count];
     NZ_ = new double[nodes_count];
     CX_ = new double[cells_count];
     CY_ = new double[cells_count];
     CZ_ = new double[cells_count];
-    VX_ = new double[cells_count];
-    VY_ = new double[cells_count];
-    VZ_ = new double[cells_count];
-    T_ = new double[cells_count];
-    Ro_ = new double[cells_count];
-    P_ = new double[cells_count];
 
     return (NX_ != NULL)
            && (NY_ != NULL)
            && (NZ_ != NULL)
            && (CX_ != NULL)
            && (CY_ != NULL)
-           && (CZ_ != NULL)
-           && (VX_ != NULL)
-           && (VY_ != NULL)
-           && (VZ_ != NULL)
-           && (T_ != NULL)
-           && (Ro_ != NULL)
-           && (P_ != NULL);
+           && (CZ_ != NULL);
 }
 
 /**
@@ -367,6 +351,11 @@ bool Block::Allocate_Memory()
  */
 void Block::Deallocate_Memory()
 {
+    if (Cells != NULL)
+    {
+        delete Cells;
+    }
+
     if (NX_ != NULL)
     {
         delete NX_;
@@ -395,36 +384,6 @@ void Block::Deallocate_Memory()
     if (CZ_ != NULL)
     {
         delete CZ_;
-    }
-
-    if (VX_ != NULL)
-    {
-        delete VX_;
-    }
-
-    if (VY_ != NULL)
-    {
-        delete VY_;
-    }
-
-    if (VZ_ != NULL)
-    {
-        delete VZ_;
-    }
-
-    if (T_ != NULL)
-    {
-        delete T_;
-    }
-
-    if (Ro_ != NULL)
-    {
-        delete Ro_;
-    }
-
-    if (P_ != NULL)
-    {
-        delete P_;
     }
 }
 
@@ -483,17 +442,6 @@ void Block::Create_Solid_Descartes(double i_real_size,
                 CZ_[ind] = dk * (k + 0.5);
             }
         }
-    }
-
-    // Characteristics.
-    for (int i = 0; i < cells_count; i++)
-    {
-        VX_[i] = 0.0;
-        VY_[i] = 0.0;
-        VZ_[i] = 0.0;
-        T_[i] = 300.0;
-        Ro_[i] = 0.001;
-        P_[i] = 1000.0;
     }
 }
 

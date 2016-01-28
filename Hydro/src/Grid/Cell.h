@@ -8,7 +8,10 @@
 #ifndef HYDRO_GRID_CELL_H
 #define HYDRO_GRID_CELL_H
 
+#include "Solver/Fluid_Dyn_Pars.h"
+
 using namespace std;
+using namespace Hydro::Solver;
 
 namespace Hydro { namespace Grid {
 
@@ -20,8 +23,9 @@ class Cell
 
 public:
 
-private:
-
+    // Two layers of fluid dynamic parameters.
+    // Current and Next layers.
+    Fluid_Dyn_Pars FDP[2];
 };
 
 } }
