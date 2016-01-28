@@ -28,6 +28,8 @@ public:
 
     // Iteration.
     void Calc_Iter(double dt);
+    void Calc_Iter(Block *b_p,
+                   double dt);
 
 private:
 
