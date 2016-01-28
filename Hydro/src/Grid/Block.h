@@ -29,6 +29,9 @@ class Block
 
 public:
 
+    // Points.
+    Point_3D *Nodes;
+
     // Cells.
     Cell *Cells;
 
@@ -74,6 +77,10 @@ public:
                                 double j_real_size,
                                 double k_real_size);
 
+    // Get node and cell pointers.
+    Point_3D *Get_Node(int i, int j, int k);
+    Cell *Get_Cell(int i, int j, int k);
+
 private:
 
     // Identifier.
@@ -88,13 +95,6 @@ private:
 
     // Facets.
     Facet *Facets_p_[Direction::Count];
-
-    /*
-     * Area of static data.
-     */
-
-    // Nodes coordinates.
-    double *NX_, *NY_, *NZ_;
 
     // Init.
     void Create_Facets();

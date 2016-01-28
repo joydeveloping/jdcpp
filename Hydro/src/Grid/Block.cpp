@@ -32,10 +32,8 @@ Block::Block(int id,
       J_Size_(j_size),
       K_Size_(k_size),
       Rank_(0),
-      Cells(NULL),
-      NX_(NULL),
-      NY_(NULL),
-      NZ_(NULL)
+      Nodes(NULL),
+      Cells(NULL)
 {
     Allocate_Memory();
 
@@ -322,19 +320,15 @@ int Block::Inner_Cells_Count() const
  */
 bool Block::Allocate_Memory()
 {
-    int cells_count = Cells_Count();
     int nodes_count = Nodes_Count();
+    int cells_count = Cells_Count();
 
     Deallocate_Memory();
 
+    Nodes = new Point_3D[nodes_count];
     Cells = new Cell[cells_count];
-    NX_ = new double[nodes_count];
-    NY_ = new double[nodes_count];
-    NZ_ = new double[nodes_count];
 
-    return (NX_ != NULL)
-           && (NY_ != NULL)
-           && (NZ_ != NULL);
+    return (Nodes != NULL) && (Cells != NULL);
 }
 
 /**
@@ -347,20 +341,47 @@ void Block::Deallocate_Memory()
         delete Cells;
     }
 
-    if (NX_ != NULL)
+    if (Nodes != NULL)
     {
-        delete NX_;
+        delete Nodes;
     }
+}
 
-    if (NY_ != NULL)
-    {
-        delete NY_;
-    }
+/**
+ * Get node and cell pointers.
+ */
 
-    if (NZ_ != NULL)
-    {
-        delete NZ_;
-    }
+/**
+ * \brief Get node pointer.
+ *
+ * \param[in] i - i coordinate
+ * \param[in] j - j coordinate
+ * \param[in] k - k coordinate
+ *
+ * \return
+ * Node pointer.
+ */
+Point_3D *Block::Get_Node(int i,
+                          int j,
+                          int k)
+{
+    return &Nodes[(k * (J_Size() + 1) + j) * (I_Size() + 1) + i];
+}
+
+/**
+ * \brief Get cell point.
+ *
+ * \param[in] i - i coordinate
+ * \param[in] j - j coordinate
+ * \param[in] k - k coordinate
+ *
+ * \return Cell pointer.
+ */
+Cell *Block::Get_Cell(int i,
+                          int j,
+                          int k)
+{
+    return &Cells[(k * J_Size() + j) * I_Size() + i];
 }
 
 /**
@@ -389,17 +410,25 @@ void Block::Create_Solid_Descartes(double i_real_size,
     int ind = 0;
 
     // Nodes coordinates.
-    for (int k = 0; k <= k_size; k++)
+    for (int i = 0; i <= i_size; i++)
     {
         for (int j = 0; j <= j_size; j++)
         {
-            for (int i = 0; i <= i_size; i++)
+            for (int k = 0; k <= k_size; k++)
             {
-                ind = k * ((i_size + 1) * (j_size + 1)) + j * (i_size + 1) + i;
+                Get_Node(i, j, k)->Set(di * i, dj * j, dk * k);
+            }
+        }
+    }
 
-                NX_[ind] = di * i;
-                NY_[ind] = dj * j;
-                NZ_[ind] = dk * k;
+    // Cells centers coordinates.
+    for (int i = 0; i < i_size; i++)
+    {
+        for (int j = 0; j < j_size; j++)
+        {
+            for (int k = 0; k < k_size; k++)
+            {
+                Get_Cell(i, j, k)->Set_Center(di * (i + 0.5), dj * (j + 0.5), dk * (k + 0.5));
             }
         }
     }

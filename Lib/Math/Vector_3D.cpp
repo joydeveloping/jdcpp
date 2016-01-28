@@ -49,5 +49,21 @@ Vector_3D::Vector_3D(const Vector_3D &v)
 {
 }
 
+/**
+ * \brief Setter.
+ *
+ * \param[in] x - x component
+ * \param[in] y - y component
+ * \param[in] z - z component
+ */
+void Vector_3D::Set(double x,
+                    double y,
+                    double z)
+{
+    X = x;
+    Y = y;
+    Z = z;
+}
+
 } }
 

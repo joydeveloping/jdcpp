@@ -31,6 +31,16 @@ public:
     // Two layers of fluid dynamic parameters.
     // Current and Next layers.
     Fluid_Dyn_Pars FDP[2];
+
+    // Setters.
+    void Set_Center(double x,
+                    double y,
+                    double z);
+    void Set_FDP(double vx,
+                 double vy,
+                 double vz,
+                 double ro,
+                 double p);
 };
 
 } }

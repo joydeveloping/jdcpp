@@ -28,6 +28,10 @@ public:
               double z);
     Vector_3D(const Vector_3D &v);
 
+    // Setter/
+    void Set(double x,
+             double y,
+             double z);
 };
 
 } }
