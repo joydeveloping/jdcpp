@@ -7,7 +7,7 @@
 
 #include "Fluid_Dyn_Pars.h"
 
-namespace Hydro { namespace Solver {
+namespace Hydro { namespace Grid {
 
 /*
  * Constructors/destructors.

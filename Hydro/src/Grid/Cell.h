@@ -9,11 +9,10 @@
 #define HYDRO_GRID_CELL_H
 
 #include "Lib/Math/Point_3D.h"
-#include "Solver/Fluid_Dyn_Pars.h"
+#include "Fluid_Dyn_Pars.h"
 
 using namespace std;
 using namespace Lib::Math;
-using namespace Hydro::Solver;
 
 namespace Hydro { namespace Grid {
 

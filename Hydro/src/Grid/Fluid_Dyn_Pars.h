@@ -5,14 +5,14 @@
  * \author Alexey Rybakov
  */
 
-#ifndef HYDRO_SOLVER_FLUID_DYN_PARS_H
-#define HYDRO_SOLVER_FLUID_DYN_PARS_H
+#ifndef HYDRO_GRID_FLUID_DYN_PARS_H
+#define HYDRO_GRID_FLUID_DYN_PARS_H
 
 #include "Lib/Math/Vector_3D.h"
 
 using namespace Lib::Math;
 
-namespace Hydro { namespace Solver {
+namespace Hydro { namespace Grid {
 
 /**
  * \brief Fluid Dynamic Parameters.
