@@ -59,11 +59,65 @@ int Run_Solid_Descartes()
     Grid *grid_p = new Grid();
     Godunov_1 *calculation_p = new Godunov_1(grid_p);
 
-    grid_p->Create_Solid_Descartes(10, 10, 10, 1.0, 1.0, 1.0);
+    grid_p->Create_Solid_Descartes(10, 1, 1, 1.0, 1.0, 1.0);
     calculation_p->Calc_Iter(0.001);
 
     // Print out.
     grid_p->Print_Statistics();
+
+    // Print block info.
+    {
+        Block *b_p = grid_p->Get_Block(0);
+        int lay = grid_p->Layer();
+
+        cout << "------------------------------------------------------------------------"
+             << "------------------------------------------" << endl;
+
+        cout << "Ro :";
+        for (int i = 0; i < b_p->Cells_Count(); i++)
+        {
+            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].Ro;
+        }
+        cout << endl;
+
+        cout << "Vx :";
+        for (int i = 0; i < b_p->Cells_Count(); i++)
+        {
+            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].V.X;
+        }
+        cout << endl;
+
+        cout << "Vy :";
+        for (int i = 0; i < b_p->Cells_Count(); i++)
+        {
+            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].V.Y;
+        }
+        cout << endl;
+
+        cout << "Vz :";
+        for (int i = 0; i < b_p->Cells_Count(); i++)
+        {
+            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].V.Z;
+        }
+        cout << endl;
+
+        cout << "E  :";
+        for (int i = 0; i < b_p->Cells_Count(); i++)
+        {
+            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].Eps;
+        }
+        cout << endl;
+
+        cout << "P  :";
+        for (int i = 0; i < b_p->Cells_Count(); i++)
+        {
+            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].P;
+        }
+        cout << endl;
+
+        cout << "------------------------------------------------------------------------"
+             << "------------------------------------------" << endl;
+    }
 
     delete grid_p;
 }

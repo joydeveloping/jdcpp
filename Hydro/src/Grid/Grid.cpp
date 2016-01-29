@@ -483,11 +483,10 @@ void Grid::Create_Solid_Descartes(int i_size,
                                   double j_real_size,
                                   double k_real_size)
 {
-    Block *b_p = NULL;
-
     // Our grid has 1 block and no interfaces.
     Allocate_Blocks_Pointers(1);
     Blocks_p_[0] = new Block(this, 0, i_size, j_size, k_size);
+    Blocks_p_[0]->Create_Solid_Descartes(i_real_size, j_real_size, k_real_size);
 }
 
 /*

@@ -48,7 +48,7 @@ if (arg == "-h"):
     Print_Help()
 elif (arg == "local"):
     cmds = ["rm -f hydro.*",
-            "mpic++ -O3 " + srcs + " -I./src -I.. -o hydro.local -lm"]
+            "mpic++ -g " + srcs + " -I./src -I.. -o hydro.local -lm"]
 elif (arg == "mvs"):
     cmds = ["rm -f hydro.*",
             "mpicc -O3 " + srcs + " -I./src -I.. -o hydro.mvs -lm",
