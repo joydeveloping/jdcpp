@@ -34,6 +34,8 @@ void Godunov_1::Calc_Iter(double dt)
     {
         Calc_Iter(G_p_->Get_Block(i), dt);
     }
+
+    G_p_->Swap_Layers();
 }
 
 /**
@@ -41,6 +43,11 @@ void Godunov_1::Calc_Iter(double dt)
  *
  * \param[in,out] b_p - block pointer
  * \param[in] dt - time step
+ *
+ * \TODO:
+ * We suggest i is x Descartes coordinate,
+ *            j is y Descartes coordinate,
+ *            k is Z Descartes coordinate.
  */
 void Godunov_1::Calc_Iter(Block *b_p,
                           double dt)
@@ -48,7 +55,8 @@ void Godunov_1::Calc_Iter(Block *b_p,
     int i_size = b_p->I_Size();
     int j_size = b_p->J_Size();
     int k_size = b_p->K_Size();
-    int lay = b_p->Get_Grid()->Layer();
+    int cur = b_p->Get_Grid()->Layer();
+    int nxt = cur ^ 1;
 
     for (int i = 0; i < i_size; i++)
     {
@@ -56,7 +64,42 @@ void Godunov_1::Calc_Iter(Block *b_p,
         {
             for (int k = 0; k < k_size; k++)
             {
-                //
+                Cell *c_p = b_p->Get_Cell(i, j, k);
+
+                c_p->FDP[nxt].Copy_From(&c_p->FDP[cur]);
+            }
+        }
+    }
+
+    for (int i = 0; i < i_size; i++)
+    {
+        for (int j = 0; j < j_size; j++)
+        {
+            for (int k = 0; k < k_size; k++)
+            {
+                // I0 direction (x-).
+                if (i == 0)
+                {
+                    // Hard border, no flow.
+                }
+
+                // I1 direction (x+).
+
+                // J0 direction (y-).
+                if (j == 0)
+                {
+                    // Hard border, no flow.
+                }
+
+                // J1 direction (y+).
+
+                // K0 direction (z-).
+                if (k == 0)
+                {
+                    // Hard border, no flow.
+                }
+
+                // K1 direction (z+).
             }
         }
     }

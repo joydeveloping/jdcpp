@@ -54,6 +54,9 @@ public:
                    double t,
                    double ro,
                    double p);
+
+    // Copy.
+    void Copy_From(const Fluid_Dyn_Pars *from_p);
 };
 
 } }
