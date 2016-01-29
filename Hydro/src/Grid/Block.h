@@ -85,6 +85,9 @@ public:
     Point_3D *Get_Node(int i, int j, int k);
     Cell *Get_Cell(int i, int j, int k);
 
+    // Other.
+    void Copy_Cur_Layer_To_Nxt();
+
 private:
 
     // Grid.

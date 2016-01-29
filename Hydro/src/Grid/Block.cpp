@@ -8,6 +8,7 @@
 #include "mpi.h"
 #include "Block.h"
 #include "configure.h"
+#include "Grid.h"
 
 namespace Hydro { namespace Grid {
 
@@ -411,7 +412,7 @@ void Block::Create_Solid_Descartes(double i_real_size,
     double dj = j_real_size / j_size;
     double dk = k_real_size / k_size;
     double vo = di * dj * dk;
-    int ind = 0;
+    int cur = Get_Grid()->Layer();
 
     // Nodes coordinates.
     for (int i = 0; i <= i_size; i++)
@@ -437,6 +438,48 @@ void Block::Create_Solid_Descartes(double i_real_size,
                 c_p->Set_Center(di * (i + 0.5), dj * (j + 0.5), dk * (k + 0.5));
                 c_p->Vo = vo;
                 c_p->Set_Descartes_Edges_Squares(dj * dk, di * dk, di * dj);
+            }
+        }
+    }
+
+    // Set FDP.
+    for (int i = 0; i < i_size; i++)
+    {
+        for (int j = 0; j < j_size; j++)
+        {
+            for (int k = 0; k < k_size; k++)
+            {
+                Cell *c_p = Get_Cell(i, j, k);
+                Fluid_Dyn_Pars *fdp_p = &c_p->FDP[cur];
+
+                fdp_p->V.X = 0.0;
+                fdp_p->V.Y = 0.0;
+                fdp_p->V.Z = 0.0;
+                fdp_p->T = 288.15;
+                fdp_p->Ro = 1.225;
+                fdp_p->P = 101325.0;
+            }
+        }
+    }
+}
+
+/**
+ * \brief Copy current layer to next.
+ */
+void Block::Copy_Cur_Layer_To_Nxt()
+{
+    int cur = Get_Grid()->Layer();
+    int nxt = cur ^ 1;
+
+    for (int i = 0; i < I_Size(); i++)
+    {
+        for (int j = 0; j < J_Size(); j++)
+        {
+            for (int k = 0; k < K_Size(); k++)
+            {
+                Cell *c_p = Get_Cell(i, j, k);
+
+                c_p->FDP[nxt].Copy_From(&c_p->FDP[cur]);
             }
         }
     }

@@ -6,6 +6,7 @@
  */
 
 #include "Godunov_1.h"
+#include "Riemann.h"
 
 namespace Hydro { namespace Solver {
 
@@ -57,6 +58,13 @@ void Godunov_1::Calc_Iter(Block *b_p,
     int k_size = b_p->K_Size();
     int cur = b_p->Get_Grid()->Layer();
     int nxt = cur ^ 1;
+    Fluid_Dyn_Pars fdp;
+    Cell *c1_p = NULL;
+    Cell *c2_p = NULL;
+    double s = 0.0;
+    double vo = 0.0;
+
+    b_p->Copy_Cur_Layer_To_Nxt();
 
     for (int i = 0; i < i_size; i++)
     {
@@ -64,19 +72,9 @@ void Godunov_1::Calc_Iter(Block *b_p,
         {
             for (int k = 0; k < k_size; k++)
             {
-                Cell *c_p = b_p->Get_Cell(i, j, k);
+                c1_p = b_p->Get_Cell(i, j, k);
+                vo = c1_p->Vo;
 
-                c_p->FDP[nxt].Copy_From(&c_p->FDP[cur]);
-            }
-        }
-    }
-
-    for (int i = 0; i < i_size; i++)
-    {
-        for (int j = 0; j < j_size; j++)
-        {
-            for (int k = 0; k < k_size; k++)
-            {
                 // I0 direction (x-).
                 if (i == 0)
                 {
@@ -84,6 +82,17 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 }
 
                 // I1 direction (x+).
+                if (i == i_size - 1)
+                {
+                    // Hard border, no flow.
+                }
+                else
+                {
+                    c2_p = b_p->Get_Cell(i + 1, j, k);
+                    Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+
+                    double d_ro = (fdp.Ro * fdp.V.X * c1_p->S[Direction::I1] * dt) / vo;
+                }
 
                 // J0 direction (y-).
                 if (j == 0)
@@ -92,6 +101,17 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 }
 
                 // J1 direction (y+).
+                if (j == j_size - 1)
+                {
+                    // Hard border, no flow.
+                }
+                else
+                {
+                    c2_p = b_p->Get_Cell(i, j + 1, k);
+                    Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+
+                    double d_ro = (fdp.Ro * fdp.V.Y * c1_p->S[Direction::J1] * dt) / vo;
+                }
 
                 // K0 direction (z-).
                 if (k == 0)
@@ -100,6 +120,17 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 }
 
                 // K1 direction (z+).
+                if (k == k_size - 1)
+                {
+                    // Hard border, no flow.
+                }
+                else
+                {
+                    c2_p = b_p->Get_Cell(i, j, k + 1);
+                    Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+
+                    double d_ro = (fdp.Ro * fdp.V.Z * c1_p->S[Direction::K1] * dt) / vo;
+                }
             }
         }
     }
