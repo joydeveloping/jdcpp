@@ -65,7 +65,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
     double vo = 0.0;
 
     b_p->Copy_Cur_Layer_To_Nxt();
-    b_p->V_Mul_Ro_Nxt();
+    b_p->Nxt_To_Divergent_Form();
 
     for (int i = 0; i < i_size; i++)
     {
@@ -95,9 +95,14 @@ void Godunov_1::Calc_Iter(Block *b_p,
 
                     double d_ro = (fdp.Ro * fdp.V.X * s * dt) / vo;
                     double d_rov = ((fdp.Ro * fdp.V.X * fdp.V.X + fdp.P) * s) / vo;
+                    double d_e = (fdp.V.X * (fdp.P + fdp.Eps) * s) / vo;
 
-                    c2_p->FDP[nxt].Ro -= d_ro;
-                    c2_p->FDP[nxt].V.X -= d_rov;
+                    c1_p->FDP[nxt].Ro -= d_ro;
+                    c1_p->FDP[nxt].V.X -= d_rov;
+                    c1_p->FDP[nxt].Eps -= d_e;
+                    c2_p->FDP[nxt].Ro += d_ro;
+                    c2_p->FDP[nxt].V.X += d_rov;
+                    c2_p->FDP[nxt].Eps += d_e;
                 }
 
                 // J0 direction (y-).
@@ -119,9 +124,14 @@ void Godunov_1::Calc_Iter(Block *b_p,
 
                     double d_ro = (fdp.Ro * fdp.V.Y * c1_p->S[Direction::J1] * dt) / vo;
                     double d_rov = ((fdp.Ro * fdp.V.Y * fdp.V.Y + fdp.P) * s) / vo;
+                    double d_e = (fdp.V.Y * (fdp.P + fdp.Eps) * s) / vo;
 
-                    c2_p->FDP[nxt].Ro -= d_ro;
-                    c2_p->FDP[nxt].V.X -= d_rov;
+                    c1_p->FDP[nxt].Ro -= d_ro;
+                    c1_p->FDP[nxt].V.Y -= d_rov;
+                    c1_p->FDP[nxt].Eps -= d_e;
+                    c2_p->FDP[nxt].Ro += d_ro;
+                    c2_p->FDP[nxt].V.Y += d_rov;
+                    c2_p->FDP[nxt].Eps += d_e;
                 }
 
                 // K0 direction (z-).
@@ -143,16 +153,21 @@ void Godunov_1::Calc_Iter(Block *b_p,
 
                     double d_ro = (fdp.Ro * fdp.V.Z * c1_p->S[Direction::K1] * dt) / vo;
                     double d_rov = ((fdp.Ro * fdp.V.Z * fdp.V.Z + fdp.P) * s) / vo;
+                    double d_e = (fdp.V.Z * (fdp.P + fdp.Eps) * s) / vo;
 
-                    c2_p->FDP[nxt].Ro -= d_ro;
-                    c2_p->FDP[nxt].V.X -= d_rov;
+                    c1_p->FDP[nxt].Ro -= d_ro;
+                    c1_p->FDP[nxt].V.Z -= d_rov;
+                    c1_p->FDP[nxt].Eps -= d_e;
+                    c2_p->FDP[nxt].Ro += d_ro;
+                    c2_p->FDP[nxt].V.Z += d_rov;
+                    c2_p->FDP[nxt].Eps += d_e;
                 }
             }
         }
     }
 
     // Restore real speed vector.
-    b_p->V_Div_Ro_Nxt();
+    b_p->Nxt_From_Divergent_Form();
 }
 
 } }

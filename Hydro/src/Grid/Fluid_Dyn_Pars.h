@@ -26,14 +26,14 @@ public:
      * Data (not private because class it is just data container).
      */
 
+    // Density.
+    double Ro;
+
     // Speed.
     Vector_3D V;
 
-    // Temperature.
-    double T;
-
-    // Density.
-    double Ro;
+    // Energy.
+    double Eps;
 
     // Pressure.
     double P;

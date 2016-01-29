@@ -87,8 +87,8 @@ public:
 
     // Other.
     void Copy_Cur_Layer_To_Nxt();
-    void V_Mul_Ro_Nxt();
-    void V_Div_Ro_Nxt();
+    void Nxt_To_Divergent_Form();
+    void Nxt_From_Divergent_Form();
 
 private:
 

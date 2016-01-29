@@ -452,12 +452,12 @@ void Block::Create_Solid_Descartes(double i_real_size,
                 Cell *c_p = Get_Cell(i, j, k);
                 Fluid_Dyn_Pars *fdp_p = &c_p->FDP[cur];
 
+                fdp_p->Ro = 1.225;
                 fdp_p->V.X = 0.0;
                 fdp_p->V.Y = 0.0;
                 fdp_p->V.Z = 0.0;
-                fdp_p->T = 288.15;
-                fdp_p->Ro = 1.225;
                 fdp_p->P = 101325.0;
+                fdp_p->Eps = (1.0 / (1.4 - 1.0)) * fdp_p->P / fdp_p->Ro;
             }
         }
     }
@@ -480,9 +480,9 @@ void Block::Copy_Cur_Layer_To_Nxt()
 }
 
 /**
- * \brief Multiply V and Ro in next layer.
+ * \brief Move next layer to divergent form.
  */
-void Block::V_Mul_Ro_Nxt()
+void Block::Nxt_To_Divergent_Form()
 {
     int cur = Get_Grid()->Layer();
     int nxt = cur ^ 1;
@@ -491,6 +491,10 @@ void Block::V_Mul_Ro_Nxt()
     {
         Fluid_Dyn_Pars *p_p = &Cells[i].FDP[nxt];
 
+        p_p->Eps = p_p->Ro * (0.5 * (p_p->V.X * p_p->V.X
+                                     + p_p->V.Y * p_p->V.Y
+                                     + p_p->V.Z * p_p->V.Z)
+                              + p_p->Eps);
         p_p->V.X *= p_p->Ro;
         p_p->V.Y *= p_p->Ro;
         p_p->V.Z *= p_p->Ro;
@@ -499,9 +503,9 @@ void Block::V_Mul_Ro_Nxt()
 
 
 /**
- * \brief Divide V on Ro in next layer.
+ * \brief Extract next layer from divergent form.
  */
-void Block::V_Div_Ro_Nxt()
+void Block::Nxt_From_Divergent_Form()
 {
     int cur = Get_Grid()->Layer();
     int nxt = cur ^ 1;
@@ -513,6 +517,10 @@ void Block::V_Div_Ro_Nxt()
         p_p->V.X /= p_p->Ro;
         p_p->V.Y /= p_p->Ro;
         p_p->V.Z /= p_p->Ro;
+        p_p->Eps = p_p->Eps / p_p->Ro - 0.5 * (p_p->V.X * p_p->V.X
+                                               + p_p->V.Y * p_p->V.Y
+                                               + p_p->V.Z * p_p->V.Z);
+        p_p->P = p_p->Eps * p_p->Ro * (1.4 - 1.0);
     }
 }
 
