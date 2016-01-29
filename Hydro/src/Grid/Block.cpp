@@ -18,16 +18,19 @@ namespace Hydro { namespace Grid {
 /**
  * \brief Default constructor.
  *
+ * \param[in] grid_p - grid pointer
  * \param[in] id - identifier
  * \param[in] i_size - I size
  * \param[in] j_size - J size
  * \param[in] k_size - K size
  */
-Block::Block(int id,
+Block::Block(Grid *grid_p,
+             int id,
              int i_size,
              int j_size,
              int k_size)
-    : Id_(id),
+    : Grid_p_(grid_p),
+      Id_(id),
       I_Size_(i_size),
       J_Size_(j_size),
       K_Size_(k_size),

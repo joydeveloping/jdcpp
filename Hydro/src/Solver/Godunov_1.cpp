@@ -48,6 +48,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
     int i_size = b_p->I_Size();
     int j_size = b_p->J_Size();
     int k_size = b_p->K_Size();
+    int lay = b_p->Get_Grid()->Layer();
 
     for (int i = 0; i < i_size; i++)
     {

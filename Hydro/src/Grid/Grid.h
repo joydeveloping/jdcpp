@@ -69,6 +69,10 @@ public:
     void Print_Statistics() { Print_Statistics(cout); }
     void Print_Blocks_Distribution(ostream &os, int ranks);
 
+    // Layer manipuolations.
+    int Layer() { return Layer_; }
+    void Swap_Layers() { Layer_ ^= 1; }
+
 private:
 
     // Count of blocks.
@@ -85,6 +89,9 @@ private:
 
     // Timers.
     Lib::MPI::Timer *Timer_Shadow_Exchange_p_;
+
+    // Active layer.
+    int Layer_;
 
     // Init.
     void Init_Timers();

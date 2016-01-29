@@ -21,6 +21,8 @@ using namespace std;
 
 namespace Hydro { namespace Grid {
 
+class Grid;
+
 /**
  * \brief Block class.
  */
@@ -40,7 +42,8 @@ public:
      */
 
     // Constructors/destructors.
-    Block(int id,
+    Block(Grid *grid_p,
+          int id,
           int i_size,
           int j_size,
           int k_size);
@@ -67,6 +70,7 @@ public:
     bool Is_Active() const { return Rank() == Lib::MPI::Rank(); }
     void Set_Rank(int rank) { Rank_ = rank; }
     Facet *Get_Facet(int i) const { return Facets_p_[i]; }
+    Grid *Get_Grid() const { return Grid_p_; }
 
     // Allocate/deallocate memory.
     bool Allocate_Memory();
@@ -82,6 +86,9 @@ public:
     Cell *Get_Cell(int i, int j, int k);
 
 private:
+
+    // Grid.
+    Grid *Grid_p_;
 
     // Identifier.
     int Id_;

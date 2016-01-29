@@ -25,7 +25,8 @@ Grid::Grid()
     : Blocks_p_(NULL),
       Blocks_Count_(0),
       Ifaces_p_(NULL),
-      Ifaces_Count_(0)
+      Ifaces_Count_(0),
+      Layer_(0)
 {
     Init_Timers();
 }
@@ -339,7 +340,7 @@ bool Grid::Load_GEOM(const string name,
 
         // Read block sizes and create block.
         file_pfg >> i_size >> j_size >> k_size;
-        Blocks_p_[i] = new Block(i, i_size - 1, j_size - 1, k_size - 1);
+        Blocks_p_[i] = new Block(this, i, i_size - 1, j_size - 1, k_size - 1);
     }
 
     // Blocks balancing.
@@ -486,7 +487,7 @@ void Grid::Create_Solid_Descartes(int i_size,
 
     // Our grid has 1 block and no interfaces.
     Allocate_Blocks_Pointers(1);
-    Blocks_p_[0] = new Block(0, i_size, j_size, k_size);
+    Blocks_p_[0] = new Block(this, 0, i_size, j_size, k_size);
 }
 
 /*
