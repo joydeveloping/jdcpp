@@ -44,16 +44,6 @@ public:
 
     // Constructors/destructors.
     Fluid_Dyn_Pars();
-    Fluid_Dyn_Pars(double vx,
-                   double vy,
-                   double vz,
-                   double t,
-                   double ro,
-                   double p);
-    Fluid_Dyn_Pars(const Vector_3D &v,
-                   double t,
-                   double ro,
-                   double p);
 
     // Copy.
     void Copy_From(const Fluid_Dyn_Pars *from_p);

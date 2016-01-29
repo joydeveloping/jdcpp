@@ -65,6 +65,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
     double vo = 0.0;
 
     b_p->Copy_Cur_Layer_To_Nxt();
+    b_p->V_Mul_Ro_Nxt();
 
     for (int i = 0; i < i_size; i++)
     {
@@ -90,8 +91,13 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 {
                     c2_p = b_p->Get_Cell(i + 1, j, k);
                     Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+                    s = c1_p->S[Direction::I1];
 
-                    double d_ro = (fdp.Ro * fdp.V.X * c1_p->S[Direction::I1] * dt) / vo;
+                    double d_ro = (fdp.Ro * fdp.V.X * s * dt) / vo;
+                    double d_rov = ((fdp.Ro * fdp.V.X * fdp.V.X + fdp.P) * s) / vo;
+
+                    c2_p->FDP[nxt].Ro -= d_ro;
+                    c2_p->FDP[nxt].V.X -= d_rov;
                 }
 
                 // J0 direction (y-).
@@ -109,8 +115,13 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 {
                     c2_p = b_p->Get_Cell(i, j + 1, k);
                     Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+                    s = c1_p->S[Direction::J1];
 
                     double d_ro = (fdp.Ro * fdp.V.Y * c1_p->S[Direction::J1] * dt) / vo;
+                    double d_rov = ((fdp.Ro * fdp.V.Y * fdp.V.Y + fdp.P) * s) / vo;
+
+                    c2_p->FDP[nxt].Ro -= d_ro;
+                    c2_p->FDP[nxt].V.X -= d_rov;
                 }
 
                 // K0 direction (z-).
@@ -128,12 +139,20 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 {
                     c2_p = b_p->Get_Cell(i, j, k + 1);
                     Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+                    s = c1_p->S[Direction::K1];
 
                     double d_ro = (fdp.Ro * fdp.V.Z * c1_p->S[Direction::K1] * dt) / vo;
+                    double d_rov = ((fdp.Ro * fdp.V.Z * fdp.V.Z + fdp.P) * s) / vo;
+
+                    c2_p->FDP[nxt].Ro -= d_ro;
+                    c2_p->FDP[nxt].V.X -= d_rov;
                 }
             }
         }
     }
+
+    // Restore real speed vector.
+    b_p->V_Div_Ro_Nxt();
 }
 
 } }

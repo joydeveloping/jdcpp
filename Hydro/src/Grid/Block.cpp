@@ -471,17 +471,48 @@ void Block::Copy_Cur_Layer_To_Nxt()
     int cur = Get_Grid()->Layer();
     int nxt = cur ^ 1;
 
-    for (int i = 0; i < I_Size(); i++)
+    for (int i = 0; i < Cells_Count(); i++)
     {
-        for (int j = 0; j < J_Size(); j++)
-        {
-            for (int k = 0; k < K_Size(); k++)
-            {
-                Cell *c_p = Get_Cell(i, j, k);
+        Cell *c_p = &Cells[i];
 
-                c_p->FDP[nxt].Copy_From(&c_p->FDP[cur]);
-            }
-        }
+        c_p->FDP[nxt].Copy_From(&c_p->FDP[cur]);
+    }
+}
+
+/**
+ * \brief Multiply V and Ro in next layer.
+ */
+void Block::V_Mul_Ro_Nxt()
+{
+    int cur = Get_Grid()->Layer();
+    int nxt = cur ^ 1;
+
+    for (int i = 0; i < Cells_Count(); i++)
+    {
+        Fluid_Dyn_Pars *p_p = &Cells[i].FDP[nxt];
+
+        p_p->V.X *= p_p->Ro;
+        p_p->V.Y *= p_p->Ro;
+        p_p->V.Z *= p_p->Ro;
+    }
+}
+
+
+/**
+ * \brief Divide V on Ro in next layer.
+ */
+void Block::V_Div_Ro_Nxt()
+{
+    int cur = Get_Grid()->Layer();
+    int nxt = cur ^ 1;
+
+    for (int i = 0; i < Cells_Count(); i++)
+    {
+        Fluid_Dyn_Pars *p_p = &Cells[i].FDP[nxt];
+
+        p_p->V.X /= p_p->Ro;
+        p_p->V.Y /= p_p->Ro;
+        p_p->V.Z /= p_p->Ro;
     }
 }
 
