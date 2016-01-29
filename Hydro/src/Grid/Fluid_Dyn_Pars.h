@@ -29,6 +29,9 @@ public:
     // Speed.
     Vector_3D V;
 
+    // Temperature.
+    double T;
+
     // Density.
     double Ro;
 
@@ -44,9 +47,11 @@ public:
     Fluid_Dyn_Pars(double vx,
                    double vy,
                    double vz,
+                   double t,
                    double ro,
                    double p);
     Fluid_Dyn_Pars(const Vector_3D &v,
+                   double t,
                    double ro,
                    double p);
 };
