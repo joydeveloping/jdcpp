@@ -23,6 +23,25 @@ void Cell::Set_Center(double x,
 }
 
 /**
+ * \brief Set edges squares for Descartes coordinate system.
+ *
+ * \param[in] si - square in i direction
+ * \param[in] sj - square in j direction
+ * \param[in] sk - square in k direction
+ */
+void Cell::Set_Descartes_Edges_Squares(double si,
+                                       double sj,
+                                       double sk)
+{
+    S[Direction::I0] = si;
+    S[Direction::I1] = si;
+    S[Direction::J0] = sj;
+    S[Direction::J1] = sj;
+    S[Direction::K0] = sk;
+    S[Direction::K1] = sk;
+}
+
+/**
  * \brief Set fluid dynamic parameters.
  *
  * \param[in] vx - speed x component

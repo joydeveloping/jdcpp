@@ -407,6 +407,7 @@ void Block::Create_Solid_Descartes(double i_real_size,
     double di = i_real_size / i_size;
     double dj = j_real_size / j_size;
     double dk = k_real_size / k_size;
+    double vo = di * dj * dk;
     int ind = 0;
 
     // Nodes coordinates.
@@ -421,14 +422,18 @@ void Block::Create_Solid_Descartes(double i_real_size,
         }
     }
 
-    // Cells centers coordinates.
+    // Cells centers coordinates, volume and edges squares.
     for (int i = 0; i < i_size; i++)
     {
         for (int j = 0; j < j_size; j++)
         {
             for (int k = 0; k < k_size; k++)
             {
-                Get_Cell(i, j, k)->Set_Center(di * (i + 0.5), dj * (j + 0.5), dk * (k + 0.5));
+                Cell *c_p = Get_Cell(i, j, k);
+
+                c_p->Set_Center(di * (i + 0.5), dj * (j + 0.5), dk * (k + 0.5));
+                c_p->Vo = vo;
+                c_p->Set_Descartes_Edges_Squares(dj * dk, di * dk, di * dj);
             }
         }
     }
