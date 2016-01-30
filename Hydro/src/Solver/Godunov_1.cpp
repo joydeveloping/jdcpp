@@ -99,12 +99,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     double d_rv = (u.R * u.V.X * u.V.X + u.P) * sd;
                     double d_e = u.V.X * (u.P + u.E) * sd;
 
-                    c1_p->U[nxt].R -= d_r;
-                    c1_p->U[nxt].V.X -= d_rv;
-                    c1_p->U[nxt].E -= d_e;
-                    c2_p->U[nxt].R += d_r;
-                    c2_p->U[nxt].V.X += d_rv;
-                    c2_p->U[nxt].E += d_e;
+                    c1_p->U[nxt].Flow_To_X(c2_p->U[nxt], d_r, d_rv, d_e);
                 }
 
                 // J0 direction (y-).
@@ -128,12 +123,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     double d_rv = (u.R * u.V.Y * u.V.Y + u.P) * sd;
                     double d_e = u.V.Y * (u.P + u.E) * sd;
 
-                    c1_p->U[nxt].R -= d_r;
-                    c1_p->U[nxt].V.Y -= d_rv;
-                    c1_p->U[nxt].E -= d_e;
-                    c2_p->U[nxt].R += d_r;
-                    c2_p->U[nxt].V.Y += d_rv;
-                    c2_p->U[nxt].E += d_e;
+                    c1_p->U[nxt].Flow_To_Y(c2_p->U[nxt], d_r, d_rv, d_e);
                 }
 
                 // K0 direction (z-).
@@ -157,12 +147,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     double d_rv = (u.R * u.V.Z * u.V.Z + u.P) * sd;
                     double d_e = u.V.Z * (u.P + u.E) * sd;
 
-                    c1_p->U[nxt].R -= d_r;
-                    c1_p->U[nxt].V.Z -= d_rv;
-                    c1_p->U[nxt].E -= d_e;
-                    c2_p->U[nxt].R += d_r;
-                    c2_p->U[nxt].V.Z += d_rv;
-                    c2_p->U[nxt].E += d_e;
+                    c1_p->U[nxt].Flow_To_Y(c2_p->U[nxt], d_r, d_rv, d_e);
                 }
             }
         }

@@ -475,7 +475,7 @@ void Block::Copy_Cur_Layer_To_Nxt()
     {
         Cell *c_p = &Cells[i];
 
-        c_p->U[nxt].Copy_From(&c_p->U[cur]);
+        c_p->U[nxt] = c_p->U[cur];
     }
 }
 

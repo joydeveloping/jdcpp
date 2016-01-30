@@ -25,16 +25,16 @@ Fluid_Dyn_Pars::Fluid_Dyn_Pars()
 }
 
 /**
- * Copy.
+ * Copy constructor.
  *
- * \param[in] from_p - copy source.
+ * \param[in] fdp - copy source.
  */
-void Fluid_Dyn_Pars::Copy_From(const Fluid_Dyn_Pars *from_p)
+Fluid_Dyn_Pars::Fluid_Dyn_Pars(const Fluid_Dyn_Pars &fdp)
 {
-    R = from_p->R;
-    V = from_p->V;
-    E = from_p->E;
-    P = from_p->P;
+    R = fdp.R;
+    V = fdp.V;
+    E = fdp.E;
+    P = fdp.P;
 }
 
 /*
@@ -61,6 +61,109 @@ void Fluid_Dyn_Pars::Expand_To_Normal()
     // TODO:
     // Remove.
     P = (1.4 - 1.0) * R * E;
+}
+
+/*
+ * Flow.
+ */
+
+/**
+ * \brief Through X edge.
+ *
+ * \param[in] dr - rho flow
+ * \param[in] dv - v flow
+ * \param[in] de - e flow
+ */
+void Fluid_Dyn_Pars::Flow_X(double dr,
+                            double dv,
+                            double de)
+{
+    R += dr;
+    V.X += dv;
+    E += de;
+}
+
+/**
+ * \brief Through Y edge.
+ *
+ * \param[in] dr - rho flow
+ * \param[in] dv - v flow
+ * \param[in] de - e flow
+ */
+void Fluid_Dyn_Pars::Flow_Y(double dr,
+                            double dv,
+                            double de)
+{
+    R += dr;
+    V.Y += dv;
+    E += de;
+}
+
+/**
+ * \brief Through Z edge.
+ *
+ * \param[in] dr - rho flow
+ * \param[in] dv - v flow
+ * \param[in] de - e flow
+ */
+void Fluid_Dyn_Pars::Flow_Z(double dr,
+                            double dv,
+                            double de)
+{
+    R += dr;
+    V.Z += dv;
+    E += de;
+}
+
+/**
+ * \brief Through Z edge.
+ *
+ * \param[in,out] fdp - neighbour fdp
+ * \param[in] dr - rho flow
+ * \param[in] dv - v flow
+ * \param[in] de - e flow
+ */
+void Fluid_Dyn_Pars::Flow_To_X(Fluid_Dyn_Pars &fdp,
+                               double dr,
+                               double dv,
+                               double de)
+{
+    Flow_X(-dr, -dv, -de);
+    fdp.Flow_X(dr, dv, de);
+}
+
+/**
+ * \brief Through Z edge.
+ *
+ * \param[in,out] fdp - neighbour fdp
+ * \param[in] dr - rho flow
+ * \param[in] dv - v flow
+ * \param[in] de - e flow
+ */
+void Fluid_Dyn_Pars::Flow_To_Y(Fluid_Dyn_Pars &fdp,
+                               double dr,
+                               double dv,
+                               double de)
+{
+    Flow_Y(-dr, -dv, -de);
+    fdp.Flow_Y(dr, dv, de);
+}
+
+/**
+ * \brief Through Z edge.
+ *
+ * \param[in,out] fdp - neighbour fdp
+ * \param[in] dr - rho flow
+ * \param[in] dv - v flow
+ * \param[in] de - e flow
+ */
+void Fluid_Dyn_Pars::Flow_To_Z(Fluid_Dyn_Pars &fdp,
+                               double dr,
+                               double dv,
+                               double de)
+{
+    Flow_Z(-dr, -dv, -de);
+    fdp.Flow_Z(dr, dv, de);
 }
 
 } }
