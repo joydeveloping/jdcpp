@@ -32,9 +32,7 @@ Fluid_Dyn_Pars::Fluid_Dyn_Pars()
 void Fluid_Dyn_Pars::Copy_From(const Fluid_Dyn_Pars *from_p)
 {
     R = from_p->R;
-    V.X = from_p->V.X;
-    V.Y = from_p->V.Y;
-    V.Z = from_p->V.Z;
+    V = from_p->V;
     E = from_p->E;
     P = from_p->P;
 }
@@ -49,9 +47,7 @@ void Fluid_Dyn_Pars::Copy_From(const Fluid_Dyn_Pars *from_p)
 void Fluid_Dyn_Pars::Normal_To_Expand()
 {
     E = R * (E + 0.5 * V.Mod_2());
-    V.X *= R;
-    V.Y *= R;
-    V.Z *= R;
+    V *= R;
 }
 
 /**
@@ -59,9 +55,7 @@ void Fluid_Dyn_Pars::Normal_To_Expand()
  */
 void Fluid_Dyn_Pars::Expand_To_Normal()
 {
-    V.X /= R;
-    V.Y /= R;
-    V.Z /= R;
+    V /= R;
     E = E / R - 0.5 * V.Mod_2();
 
     // TODO:

@@ -482,7 +482,7 @@ void Block::Copy_Cur_Layer_To_Nxt()
 /**
  * \brief Move next layer to divergent form.
  */
-void Block::Nxt_To_Divergent_Form()
+void Block::Nxt_Normal_To_Expand()
 {
     int cur = Get_Grid()->Layer();
     int nxt = cur ^ 1;
@@ -497,7 +497,7 @@ void Block::Nxt_To_Divergent_Form()
 /**
  * \brief Extract next layer from divergent form.
  */
-void Block::Nxt_From_Divergent_Form()
+void Block::Nxt_Expand_To_Normal()
 {
     int cur = Get_Grid()->Layer();
     int nxt = cur ^ 1;

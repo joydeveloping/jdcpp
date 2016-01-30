@@ -33,6 +33,10 @@ public:
              double y,
              double z);
 
+    // Overload.
+    Vector_3D &operator*=(double d);
+    Vector_3D &operator/=(double d);
+
     // Operations.
     double Mod_2() { return X * X + Y * Y + Z * Z; }
 };

@@ -65,5 +65,43 @@ void Vector_3D::Set(double x,
     Z = z;
 }
 
+/*
+ * Overload.
+ */
+
+/**
+ * \brief Multiply on value.
+ *
+ * \param[in] d - value
+ *
+ * \return
+ * Modified vector.
+ */
+Vector_3D &Vector_3D::operator*=(double d)
+{
+    X *= d;
+    Y *= d;
+    Z *= d;
+
+    return *this;
+}
+
+/**
+ * \brief Divide on value.
+ *
+ * \param[in] d - value
+ *
+ * \return
+ * Modified vector.
+ */
+Vector_3D &Vector_3D::operator/=(double d)
+{
+    X /= d;
+    Y /= d;
+    Z /= d;
+
+    return *this;
+}
+
 } }
 

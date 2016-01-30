@@ -58,14 +58,15 @@ void Godunov_1::Calc_Iter(Block *b_p,
     int k_size = b_p->K_Size();
     int cur = b_p->Get_Grid()->Layer();
     int nxt = cur ^ 1;
-    Fluid_Dyn_Pars fdp;
+    Fluid_Dyn_Pars u;
     Cell *c1_p = NULL;
     Cell *c2_p = NULL;
-    double s = 0.0;
     double vo = 0.0;
+    double d = 0.0;
+    double sd = 0.0;
 
     b_p->Copy_Cur_Layer_To_Nxt();
-    b_p->Nxt_To_Divergent_Form();
+    b_p->Nxt_Normal_To_Expand();
 
     for (int i = 0; i < i_size; i++)
     {
@@ -75,6 +76,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
             {
                 c1_p = b_p->Get_Cell(i, j, k);
                 vo = c1_p->Vo;
+                d = dt / vo;
 
                 // I0 direction (x-).
                 if (i == 0)
@@ -90,12 +92,12 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 else
                 {
                     c2_p = b_p->Get_Cell(i + 1, j, k);
-                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &fdp);
-                    s = c1_p->S[Direction::I1];
+                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
+                    sd = c1_p->S[Direction::I1] * d;
 
-                    double d_r = (fdp.R * fdp.V.X * s * dt) / vo;
-                    double d_rv = ((fdp.R * fdp.V.X * fdp.V.X + fdp.P) * s * dt) / vo;
-                    double d_e = (fdp.V.X * (fdp.P + fdp.E) * s * dt) / vo;
+                    double d_r = u.R * u.V.X * sd;
+                    double d_rv = (u.R * u.V.X * u.V.X + u.P) * sd;
+                    double d_e = u.V.X * (u.P + u.E) * sd;
 
                     c1_p->U[nxt].R -= d_r;
                     c1_p->U[nxt].V.X -= d_rv;
@@ -119,12 +121,12 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 else
                 {
                     c2_p = b_p->Get_Cell(i, j + 1, k);
-                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &fdp);
-                    s = c1_p->S[Direction::J1];
+                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
+                    sd = c1_p->S[Direction::J1] * d;
 
-                    double d_r = (fdp.R * fdp.V.Y * c1_p->S[Direction::J1] * dt) / vo;
-                    double d_rv = ((fdp.R * fdp.V.Y * fdp.V.Y + fdp.P) * s * dt) / vo;
-                    double d_e = (fdp.V.Y * (fdp.P + fdp.E) * s * dt) / vo;
+                    double d_r = u.R * u.V.Y * sd;
+                    double d_rv = (u.R * u.V.Y * u.V.Y + u.P) * sd;
+                    double d_e = u.V.Y * (u.P + u.E) * sd;
 
                     c1_p->U[nxt].R -= d_r;
                     c1_p->U[nxt].V.Y -= d_rv;
@@ -148,12 +150,12 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 else
                 {
                     c2_p = b_p->Get_Cell(i, j, k + 1);
-                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &fdp);
-                    s = c1_p->S[Direction::K1];
+                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
+                    sd = c1_p->S[Direction::K1] * d;
 
-                    double d_r = (fdp.R * fdp.V.Z * c1_p->S[Direction::K1] * dt) / vo;
-                    double d_rv = ((fdp.R * fdp.V.Z * fdp.V.Z + fdp.P) * s * dt) / vo;
-                    double d_e = (fdp.V.Z * (fdp.P + fdp.E) * s * dt) / vo;
+                    double d_r = u.R * u.V.Z * sd;
+                    double d_rv = (u.R * u.V.Z * u.V.Z + u.P) * sd;
+                    double d_e = u.V.Z * (u.P + u.E) * sd;
 
                     c1_p->U[nxt].R -= d_r;
                     c1_p->U[nxt].V.Z -= d_rv;
@@ -167,7 +169,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
     }
 
     // Restore real speed vector.
-    b_p->Nxt_From_Divergent_Form();
+    b_p->Nxt_Expand_To_Normal();
 }
 
 } }
