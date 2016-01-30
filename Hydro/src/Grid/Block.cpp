@@ -442,7 +442,7 @@ void Block::Create_Solid_Descartes(double i_real_size,
         }
     }
 
-    // Set FDP.
+    // Set U.
     for (int i = 0; i < i_size; i++)
     {
         for (int j = 0; j < j_size; j++)
@@ -450,7 +450,7 @@ void Block::Create_Solid_Descartes(double i_real_size,
             for (int k = 0; k < k_size; k++)
             {
                 Cell *c_p = Get_Cell(i, j, k);
-                Fluid_Dyn_Pars *fdp_p = &c_p->FDP[cur];
+                Fluid_Dyn_Pars *fdp_p = &c_p->U[cur];
 
                 fdp_p->Ro = 1.225;
                 fdp_p->V.X = 0.0;
@@ -475,7 +475,7 @@ void Block::Copy_Cur_Layer_To_Nxt()
     {
         Cell *c_p = &Cells[i];
 
-        c_p->FDP[nxt].Copy_From(&c_p->FDP[cur]);
+        c_p->U[nxt].Copy_From(&c_p->U[cur]);
     }
 }
 
@@ -489,7 +489,7 @@ void Block::Nxt_To_Divergent_Form()
 
     for (int i = 0; i < Cells_Count(); i++)
     {
-        Fluid_Dyn_Pars *p_p = &Cells[i].FDP[nxt];
+        Fluid_Dyn_Pars *p_p = &Cells[i].U[nxt];
 
         p_p->Eps = p_p->Ro * (0.5 * p_p->V.Mod_2() + p_p->Eps);
         p_p->V.X *= p_p->Ro;
@@ -509,7 +509,7 @@ void Block::Nxt_From_Divergent_Form()
 
     for (int i = 0; i < Cells_Count(); i++)
     {
-        Fluid_Dyn_Pars *p_p = &Cells[i].FDP[nxt];
+        Fluid_Dyn_Pars *p_p = &Cells[i].U[nxt];
 
         p_p->V.X /= p_p->Ro;
         p_p->V.Y /= p_p->Ro;

@@ -50,15 +50,15 @@ void Cell::Set_Descartes_Edges_Squares(double si,
  * \param[in] ro - density
  * \param[in] p - pressure
  */
-void Cell::Set_FDP(double vx,
-                   double vy,
-                   double vz,
-                   double ro,
-                   double p)
+void Cell::Set_U0(double vx,
+                  double vy,
+                  double vz,
+                  double ro,
+                  double p)
 {
-    FDP[0].V.Set(vx, vy, vz);
-    FDP[0].Ro = ro;
-    FDP[0].P = p;
+    U[0].V.Set(vx, vy, vz);
+    U[0].Ro = ro;
+    U[0].P = p;
 }
 
 } }

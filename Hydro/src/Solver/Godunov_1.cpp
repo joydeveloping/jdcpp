@@ -90,19 +90,19 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 else
                 {
                     c2_p = b_p->Get_Cell(i + 1, j, k);
-                    Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &fdp);
                     s = c1_p->S[Direction::I1];
 
                     double d_ro = (fdp.Ro * fdp.V.X * s * dt) / vo;
-                    double d_rov = ((fdp.Ro * fdp.V.X * fdp.V.X + fdp.P) * s) / vo;
-                    double d_e = (fdp.V.X * (fdp.P + fdp.Eps) * s) / vo;
+                    double d_rov = ((fdp.Ro * fdp.V.X * fdp.V.X + fdp.P) * s * dt) / vo;
+                    double d_e = (fdp.V.X * (fdp.P + fdp.Eps) * s * dt) / vo;
 
-                    c1_p->FDP[nxt].Ro -= d_ro;
-                    c1_p->FDP[nxt].V.X -= d_rov;
-                    c1_p->FDP[nxt].Eps -= d_e;
-                    c2_p->FDP[nxt].Ro += d_ro;
-                    c2_p->FDP[nxt].V.X += d_rov;
-                    c2_p->FDP[nxt].Eps += d_e;
+                    c1_p->U[nxt].Ro -= d_ro;
+                    c1_p->U[nxt].V.X -= d_rov;
+                    c1_p->U[nxt].Eps -= d_e;
+                    c2_p->U[nxt].Ro += d_ro;
+                    c2_p->U[nxt].V.X += d_rov;
+                    c2_p->U[nxt].Eps += d_e;
                 }
 
                 // J0 direction (y-).
@@ -119,19 +119,19 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 else
                 {
                     c2_p = b_p->Get_Cell(i, j + 1, k);
-                    Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &fdp);
                     s = c1_p->S[Direction::J1];
 
                     double d_ro = (fdp.Ro * fdp.V.Y * c1_p->S[Direction::J1] * dt) / vo;
-                    double d_rov = ((fdp.Ro * fdp.V.Y * fdp.V.Y + fdp.P) * s) / vo;
-                    double d_e = (fdp.V.Y * (fdp.P + fdp.Eps) * s) / vo;
+                    double d_rov = ((fdp.Ro * fdp.V.Y * fdp.V.Y + fdp.P) * s * dt) / vo;
+                    double d_e = (fdp.V.Y * (fdp.P + fdp.Eps) * s * dt) / vo;
 
-                    c1_p->FDP[nxt].Ro -= d_ro;
-                    c1_p->FDP[nxt].V.Y -= d_rov;
-                    c1_p->FDP[nxt].Eps -= d_e;
-                    c2_p->FDP[nxt].Ro += d_ro;
-                    c2_p->FDP[nxt].V.Y += d_rov;
-                    c2_p->FDP[nxt].Eps += d_e;
+                    c1_p->U[nxt].Ro -= d_ro;
+                    c1_p->U[nxt].V.Y -= d_rov;
+                    c1_p->U[nxt].Eps -= d_e;
+                    c2_p->U[nxt].Ro += d_ro;
+                    c2_p->U[nxt].V.Y += d_rov;
+                    c2_p->U[nxt].Eps += d_e;
                 }
 
                 // K0 direction (z-).
@@ -148,19 +148,19 @@ void Godunov_1::Calc_Iter(Block *b_p,
                 else
                 {
                     c2_p = b_p->Get_Cell(i, j, k + 1);
-                    Riemann::Avg(&c1_p->FDP[cur], &c2_p->FDP[cur], &fdp);
+                    Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &fdp);
                     s = c1_p->S[Direction::K1];
 
                     double d_ro = (fdp.Ro * fdp.V.Z * c1_p->S[Direction::K1] * dt) / vo;
-                    double d_rov = ((fdp.Ro * fdp.V.Z * fdp.V.Z + fdp.P) * s) / vo;
-                    double d_e = (fdp.V.Z * (fdp.P + fdp.Eps) * s) / vo;
+                    double d_rov = ((fdp.Ro * fdp.V.Z * fdp.V.Z + fdp.P) * s * dt) / vo;
+                    double d_e = (fdp.V.Z * (fdp.P + fdp.Eps) * s * dt) / vo;
 
-                    c1_p->FDP[nxt].Ro -= d_ro;
-                    c1_p->FDP[nxt].V.Z -= d_rov;
-                    c1_p->FDP[nxt].Eps -= d_e;
-                    c2_p->FDP[nxt].Ro += d_ro;
-                    c2_p->FDP[nxt].V.Z += d_rov;
-                    c2_p->FDP[nxt].Eps += d_e;
+                    c1_p->U[nxt].Ro -= d_ro;
+                    c1_p->U[nxt].V.Z -= d_rov;
+                    c1_p->U[nxt].Eps -= d_e;
+                    c2_p->U[nxt].Ro += d_ro;
+                    c2_p->U[nxt].V.Z += d_rov;
+                    c2_p->U[nxt].Eps += d_e;
                 }
             }
         }

@@ -76,42 +76,42 @@ int Run_Solid_Descartes()
         cout << "Ro :";
         for (int i = 0; i < b_p->Cells_Count(); i++)
         {
-            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].Ro;
+            cout << " " << setw(10) << b_p->Cells[i].U[lay].Ro;
         }
         cout << endl;
 
         cout << "Vx :";
         for (int i = 0; i < b_p->Cells_Count(); i++)
         {
-            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].V.X;
+            cout << " " << setw(10) << b_p->Cells[i].U[lay].V.X;
         }
         cout << endl;
 
         cout << "Vy :";
         for (int i = 0; i < b_p->Cells_Count(); i++)
         {
-            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].V.Y;
+            cout << " " << setw(10) << b_p->Cells[i].U[lay].V.Y;
         }
         cout << endl;
 
         cout << "Vz :";
         for (int i = 0; i < b_p->Cells_Count(); i++)
         {
-            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].V.Z;
+            cout << " " << setw(10) << b_p->Cells[i].U[lay].V.Z;
         }
         cout << endl;
 
         cout << "E  :";
         for (int i = 0; i < b_p->Cells_Count(); i++)
         {
-            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].Eps;
+            cout << " " << setw(10) << b_p->Cells[i].U[lay].Eps;
         }
         cout << endl;
 
         cout << "P  :";
         for (int i = 0; i < b_p->Cells_Count(); i++)
         {
-            cout << " " << setw(10) << b_p->Cells[i].FDP[lay].P;
+            cout << " " << setw(10) << b_p->Cells[i].U[lay].P;
         }
         cout << endl;
 

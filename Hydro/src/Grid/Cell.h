@@ -36,7 +36,7 @@ public:
 
     // Two layers of fluid dynamic parameters.
     // Current and Next layers.
-    Fluid_Dyn_Pars FDP[2];
+    Fluid_Dyn_Pars U[2];
 
     // Setters.
     void Set_Center(double x,
@@ -45,11 +45,11 @@ public:
     void Set_Descartes_Edges_Squares(double si,
                                      double sj,
                                      double sk);
-    void Set_FDP(double vx,
-                 double vy,
-                 double vz,
-                 double ro,
-                 double p);
+    void Set_U0(double vx,
+                double vy,
+                double vz,
+                double ro,
+                double p);
 };
 
 } }
