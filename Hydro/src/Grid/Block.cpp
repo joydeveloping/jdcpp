@@ -489,12 +489,7 @@ void Block::Nxt_To_Divergent_Form()
 
     for (int i = 0; i < Cells_Count(); i++)
     {
-        Fluid_Dyn_Pars *p_p = &Cells[i].U[nxt];
-
-        p_p->E = p_p->R * (0.5 * p_p->V.Mod_2() + p_p->E);
-        p_p->V.X *= p_p->R;
-        p_p->V.Y *= p_p->R;
-        p_p->V.Z *= p_p->R;
+        Cells[i].U[nxt].Normal_To_Expand();
     }
 }
 
@@ -509,13 +504,7 @@ void Block::Nxt_From_Divergent_Form()
 
     for (int i = 0; i < Cells_Count(); i++)
     {
-        Fluid_Dyn_Pars *p_p = &Cells[i].U[nxt];
-
-        p_p->V.X /= p_p->R;
-        p_p->V.Y /= p_p->R;
-        p_p->V.Z /= p_p->R;
-        p_p->E = p_p->E / p_p->R - 0.5 * p_p->V.Mod_2();
-        p_p->P = p_p->E * p_p->R * (1.4 - 1.0);
+        Cells[i].U[nxt].Expand_To_Normal();
     }
 }
 

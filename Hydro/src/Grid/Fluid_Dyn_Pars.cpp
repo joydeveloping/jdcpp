@@ -39,5 +39,35 @@ void Fluid_Dyn_Pars::Copy_From(const Fluid_Dyn_Pars *from_p)
     P = from_p->P;
 }
 
+/*
+ * Forms: normal <-> expand.
+ */
+
+/**
+ * \brief Convert normal form to expand.
+ */
+void Fluid_Dyn_Pars::Normal_To_Expand()
+{
+    E = R * (E + 0.5 * V.Mod_2());
+    V.X *= R;
+    V.Y *= R;
+    V.Z *= R;
+}
+
+/**
+ * \brief Convert expand form to normal.
+ */
+void Fluid_Dyn_Pars::Expand_To_Normal()
+{
+    V.X /= R;
+    V.Y /= R;
+    V.Z /= R;
+    E = E / R - 0.5 * V.Mod_2();
+
+    // TODO:
+    // Remove.
+    P = (1.4 - 1.0) * R * E;
+}
+
 } }
 

@@ -51,6 +51,10 @@ public:
 
     // Copy.
     void Copy_From(const Fluid_Dyn_Pars *from_p);
+
+    // Forms: normal <-> expand.
+    void Normal_To_Expand();
+    void Expand_To_Normal();
 };
 
 } }
