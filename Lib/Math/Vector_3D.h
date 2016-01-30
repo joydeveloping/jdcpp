@@ -32,6 +32,9 @@ public:
     void Set(double x,
              double y,
              double z);
+
+    // Operations.
+    double Mod_2() { return X * X + Y * Y + Z * Z; }
 };
 
 } }

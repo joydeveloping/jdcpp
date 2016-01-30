@@ -491,10 +491,7 @@ void Block::Nxt_To_Divergent_Form()
     {
         Fluid_Dyn_Pars *p_p = &Cells[i].FDP[nxt];
 
-        p_p->Eps = p_p->Ro * (0.5 * (p_p->V.X * p_p->V.X
-                                     + p_p->V.Y * p_p->V.Y
-                                     + p_p->V.Z * p_p->V.Z)
-                              + p_p->Eps);
+        p_p->Eps = p_p->Ro * (0.5 * p_p->V.Mod_2() + p_p->Eps);
         p_p->V.X *= p_p->Ro;
         p_p->V.Y *= p_p->Ro;
         p_p->V.Z *= p_p->Ro;
@@ -517,9 +514,7 @@ void Block::Nxt_From_Divergent_Form()
         p_p->V.X /= p_p->Ro;
         p_p->V.Y /= p_p->Ro;
         p_p->V.Z /= p_p->Ro;
-        p_p->Eps = p_p->Eps / p_p->Ro - 0.5 * (p_p->V.X * p_p->V.X
-                                               + p_p->V.Y * p_p->V.Y
-                                               + p_p->V.Z * p_p->V.Z);
+        p_p->Eps = p_p->Eps / p_p->Ro - 0.5 * p_p->V.Mod_2();
         p_p->P = p_p->Eps * p_p->Ro * (1.4 - 1.0);
     }
 }
