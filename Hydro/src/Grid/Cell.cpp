@@ -53,11 +53,11 @@ void Cell::Set_Descartes_Edges_Squares(double si,
 void Cell::Set_U0(double vx,
                   double vy,
                   double vz,
-                  double ro,
+                  double r,
                   double p)
 {
     U[0].V.Set(vx, vy, vz);
-    U[0].Ro = ro;
+    U[0].R = r;
     U[0].P = p;
 }
 

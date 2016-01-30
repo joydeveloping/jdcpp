@@ -27,13 +27,17 @@ public:
      */
 
     // Density.
-    double Ro;
+    double R;
 
     // Speed.
+    // In normal form: speed.
+    // In expand form: speed * R
     Vector_3D V;
 
     // Energy.
-    double Eps;
+    // In noraml form: inner energy per unit
+    // In expand form: full energy
+    double E;
 
     // Pressure.
     double P;

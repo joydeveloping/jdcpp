@@ -452,12 +452,12 @@ void Block::Create_Solid_Descartes(double i_real_size,
                 Cell *c_p = Get_Cell(i, j, k);
                 Fluid_Dyn_Pars *fdp_p = &c_p->U[cur];
 
-                fdp_p->Ro = 1.225;
+                fdp_p->R = 1.225;
                 fdp_p->V.X = 0.0;
                 fdp_p->V.Y = 0.0;
                 fdp_p->V.Z = 0.0;
                 fdp_p->P = 101325.0;
-                fdp_p->Eps = (1.0 / (1.4 - 1.0)) * fdp_p->P / fdp_p->Ro;
+                fdp_p->E = (1.0 / (1.4 - 1.0)) * fdp_p->P / fdp_p->R;
             }
         }
     }
@@ -491,10 +491,10 @@ void Block::Nxt_To_Divergent_Form()
     {
         Fluid_Dyn_Pars *p_p = &Cells[i].U[nxt];
 
-        p_p->Eps = p_p->Ro * (0.5 * p_p->V.Mod_2() + p_p->Eps);
-        p_p->V.X *= p_p->Ro;
-        p_p->V.Y *= p_p->Ro;
-        p_p->V.Z *= p_p->Ro;
+        p_p->E = p_p->R * (0.5 * p_p->V.Mod_2() + p_p->E);
+        p_p->V.X *= p_p->R;
+        p_p->V.Y *= p_p->R;
+        p_p->V.Z *= p_p->R;
     }
 }
 
@@ -511,11 +511,11 @@ void Block::Nxt_From_Divergent_Form()
     {
         Fluid_Dyn_Pars *p_p = &Cells[i].U[nxt];
 
-        p_p->V.X /= p_p->Ro;
-        p_p->V.Y /= p_p->Ro;
-        p_p->V.Z /= p_p->Ro;
-        p_p->Eps = p_p->Eps / p_p->Ro - 0.5 * p_p->V.Mod_2();
-        p_p->P = p_p->Eps * p_p->Ro * (1.4 - 1.0);
+        p_p->V.X /= p_p->R;
+        p_p->V.Y /= p_p->R;
+        p_p->V.Z /= p_p->R;
+        p_p->E = p_p->E / p_p->R - 0.5 * p_p->V.Mod_2();
+        p_p->P = p_p->E * p_p->R * (1.4 - 1.0);
     }
 }
 

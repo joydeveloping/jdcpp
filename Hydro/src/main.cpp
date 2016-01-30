@@ -76,7 +76,7 @@ int Run_Solid_Descartes()
         cout << "Ro :";
         for (int i = 0; i < b_p->Cells_Count(); i++)
         {
-            cout << " " << setw(10) << b_p->Cells[i].U[lay].Ro;
+            cout << " " << setw(10) << b_p->Cells[i].U[lay].R;
         }
         cout << endl;
 
@@ -104,7 +104,7 @@ int Run_Solid_Descartes()
         cout << "E  :";
         for (int i = 0; i < b_p->Cells_Count(); i++)
         {
-            cout << " " << setw(10) << b_p->Cells[i].U[lay].Eps;
+            cout << " " << setw(10) << b_p->Cells[i].U[lay].E;
         }
         cout << endl;
 
