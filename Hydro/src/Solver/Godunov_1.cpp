@@ -95,11 +95,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
                     sd = c1_p->S[Direction::I1] * d;
 
-                    double d_r = u.R * u.V.X * sd;
-                    double d_rv = (u.R * u.V.X * u.V.X + u.P) * sd;
-                    double d_e = u.V.X * (u.P + u.E) * sd;
-
-                    c1_p->U[nxt].Flow_To_X(c2_p->U[nxt], d_r, d_rv, d_e);
+                    c1_p->U[nxt].Flow_To_X(c2_p->U[nxt], u.DR_X() * sd, u.DV_X() * sd, u.DE_X() * sd);
                 }
 
                 // J0 direction (y-).
@@ -119,11 +115,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
                     sd = c1_p->S[Direction::J1] * d;
 
-                    double d_r = u.R * u.V.Y * sd;
-                    double d_rv = (u.R * u.V.Y * u.V.Y + u.P) * sd;
-                    double d_e = u.V.Y * (u.P + u.E) * sd;
-
-                    c1_p->U[nxt].Flow_To_Y(c2_p->U[nxt], d_r, d_rv, d_e);
+                    c1_p->U[nxt].Flow_To_Y(c2_p->U[nxt], u.DR_Y() * sd, u.DV_Y() * sd, u.DE_Y() * sd);
                 }
 
                 // K0 direction (z-).
@@ -143,11 +135,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
                     sd = c1_p->S[Direction::K1] * d;
 
-                    double d_r = u.R * u.V.Z * sd;
-                    double d_rv = (u.R * u.V.Z * u.V.Z + u.P) * sd;
-                    double d_e = u.V.Z * (u.P + u.E) * sd;
-
-                    c1_p->U[nxt].Flow_To_Y(c2_p->U[nxt], d_r, d_rv, d_e);
+                    c1_p->U[nxt].Flow_To_Y(c2_p->U[nxt], u.DR_Z() * sd, u.DV_Z() * sd, u.DE_Z() * sd);
                 }
             }
         }

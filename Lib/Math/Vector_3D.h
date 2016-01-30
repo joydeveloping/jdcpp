@@ -38,7 +38,7 @@ public:
     Vector_3D &operator/=(double d);
 
     // Operations.
-    double Mod_2() { return X * X + Y * Y + Z * Z; }
+    double Mod_2() const { return X * X + Y * Y + Z * Z; }
 };
 
 } }
