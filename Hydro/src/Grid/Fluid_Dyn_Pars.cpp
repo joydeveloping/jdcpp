@@ -78,9 +78,9 @@ void Fluid_Dyn_Pars::Flow_X(double dr,
                             double dv,
                             double de)
 {
-    R += dr;
-    V.X += dv;
-    E += de;
+    R -= dr;
+    V.X -= dv;
+    E -= de;
 }
 
 /**
@@ -94,9 +94,9 @@ void Fluid_Dyn_Pars::Flow_Y(double dr,
                             double dv,
                             double de)
 {
-    R += dr;
-    V.Y += dv;
-    E += de;
+    R -= dr;
+    V.Y -= dv;
+    E -= de;
 }
 
 /**
@@ -110,9 +110,9 @@ void Fluid_Dyn_Pars::Flow_Z(double dr,
                             double dv,
                             double de)
 {
-    R += dr;
-    V.Z += dv;
-    E += de;
+    R -= dr;
+    V.Z -= dv;
+    E -= de;
 }
 
 /**
@@ -123,13 +123,13 @@ void Fluid_Dyn_Pars::Flow_Z(double dr,
  * \param[in] dv - v flow
  * \param[in] de - e flow
  */
-void Fluid_Dyn_Pars::Flow_To_X(Fluid_Dyn_Pars &fdp,
-                               double dr,
-                               double dv,
-                               double de)
+void Fluid_Dyn_Pars::Flow_X(Fluid_Dyn_Pars &fdp,
+                            double dr,
+                            double dv,
+                            double de)
 {
-    Flow_X(-dr, -dv, -de);
-    fdp.Flow_X(dr, dv, de);
+    Flow_X(dr, dv, de);
+    fdp.Flow_X(-dr, -dv, -de);
 }
 
 /**
@@ -140,13 +140,13 @@ void Fluid_Dyn_Pars::Flow_To_X(Fluid_Dyn_Pars &fdp,
  * \param[in] dv - v flow
  * \param[in] de - e flow
  */
-void Fluid_Dyn_Pars::Flow_To_Y(Fluid_Dyn_Pars &fdp,
-                               double dr,
-                               double dv,
-                               double de)
+void Fluid_Dyn_Pars::Flow_Y(Fluid_Dyn_Pars &fdp,
+                            double dr,
+                            double dv,
+                            double de)
 {
-    Flow_Y(-dr, -dv, -de);
-    fdp.Flow_Y(dr, dv, de);
+    Flow_Y(dr, dv, de);
+    fdp.Flow_Y(-dr, -dv, -de);
 }
 
 /**
@@ -157,13 +157,13 @@ void Fluid_Dyn_Pars::Flow_To_Y(Fluid_Dyn_Pars &fdp,
  * \param[in] dv - v flow
  * \param[in] de - e flow
  */
-void Fluid_Dyn_Pars::Flow_To_Z(Fluid_Dyn_Pars &fdp,
-                               double dr,
-                               double dv,
-                               double de)
+void Fluid_Dyn_Pars::Flow_Z(Fluid_Dyn_Pars &fdp,
+                            double dr,
+                            double dv,
+                            double de)
 {
-    Flow_Z(-dr, -dv, -de);
-    fdp.Flow_Z(dr, dv, de);
+    Flow_Z(dr, dv, de);
+    fdp.Flow_Z(-dr, -dv, -de);
 }
 
 /*

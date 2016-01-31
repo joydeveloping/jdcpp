@@ -450,14 +450,14 @@ void Block::Create_Solid_Descartes(double i_real_size,
             for (int k = 0; k < k_size; k++)
             {
                 Cell *c_p = Get_Cell(i, j, k);
-                Fluid_Dyn_Pars *fdp_p = &c_p->U[cur];
+                Fluid_Dyn_Pars &u = c_p->U[cur];
 
-                fdp_p->R = (i == 0) ? 1.0 : 1.225;
-                fdp_p->V.X = 0.0;
-                fdp_p->V.Y = 0.0;
-                fdp_p->V.Z = 0.0;
-                fdp_p->P = 101325.0;
-                fdp_p->E = (1.0 / (1.4 - 1.0)) * fdp_p->P / fdp_p->R;
+                u.R = (i == 0) ? 1.0 : 1.225;
+                u.V.X = 0.0;
+                u.V.Y = 0.0;
+                u.V.Z = 0.0;
+                u.P = 101325.0;
+                u.E = (1.0 / (1.4 - 1.0)) * u.P / u.R;
             }
         }
     }

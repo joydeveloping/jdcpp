@@ -74,18 +74,18 @@ public:
     void Flow_Z(double dr,
                 double dv,
                 double de);
-    void Flow_To_X(Fluid_Dyn_Pars &fdp,
-                   double dr,
-                   double dv,
-                   double de);
-    void Flow_To_Y(Fluid_Dyn_Pars &fdp,
-                   double dr,
-                   double dv,
-                   double de);
-    void Flow_To_Z(Fluid_Dyn_Pars &fdp,
-                   double dr,
-                   double dv,
-                   double de);
+    void Flow_X(Fluid_Dyn_Pars &fdp,
+                double dr,
+                double dv,
+                double de);
+    void Flow_Y(Fluid_Dyn_Pars &fdp,
+                double dr,
+                double dv,
+                double de);
+    void Flow_Z(Fluid_Dyn_Pars &fdp,
+                double dr,
+                double dv,
+                double de);
 };
 
 // Print information.
