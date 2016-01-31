@@ -9,6 +9,7 @@
 #define HYDRO_GRID_FLUID_DYN_PARS_H
 
 #include "Lib/Math/Vector_3D.h"
+#include "Lib/IO/io.h"
 
 using namespace Lib::Math;
 
@@ -86,6 +87,10 @@ public:
                    double dv,
                    double de);
 };
+
+// Print information.
+ostream &operator<<(ostream &os,
+                    const Fluid_Dyn_Pars *p);
 
 } }
 

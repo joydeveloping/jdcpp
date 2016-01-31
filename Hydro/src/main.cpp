@@ -60,7 +60,7 @@ int Run_Solid_Descartes()
     Godunov_1 *calculation_p = new Godunov_1(grid_p);
 
     grid_p->Create_Solid_Descartes(10, 1, 1, 1.0, 1.0, 1.0);
-    calculation_p->Calc_Iters(1000, 0.001);
+    calculation_p->Calc_Iters(2, 0.001);
 
     // Print out.
     grid_p->Print_Statistics();

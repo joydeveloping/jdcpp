@@ -68,6 +68,7 @@ void Godunov_1::Calc_Iter(double dt)
 void Godunov_1::Calc_Iter(Block *b_p,
                           double dt)
 {
+    cout << "ITER" << endl;
     int i_size = b_p->I_Size();
     int j_size = b_p->J_Size();
     int k_size = b_p->K_Size();
@@ -104,6 +105,8 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     u2.V.X *= -1.0;
                     Riemann::Avg(&c1_p->U[cur], &u2, &u);
 
+                    cout << &u2 << &c1_p->U[cur] << &u << "-" << endl;
+
                     c1_p->U[nxt].Flow_X(u.DR_X() * sd, u.DV_X() * sd, u.DE_X() * sd);
                 }
 
@@ -118,12 +121,16 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     u2.V.X *= -1.0;
                     Riemann::Avg(&c1_p->U[cur], &u2, &u);
 
+                    cout << &c1_p->U[cur] << &u2 << &u << "-" << endl;
+
                     c1_p->U[nxt].Flow_X(-u.DR_X() * sd, -u.DV_X() * sd, -u.DE_X() * sd);
                 }
                 else
                 {
                     c2_p = b_p->Get_Cell(i + 1, j, k);
                     Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
+
+                    cout << &c1_p->U[cur] << &c2_p->U[cur] << &u << "-" << endl;
 
                     c1_p->U[nxt].Flow_To_X(c2_p->U[nxt], u.DR_X() * sd, u.DV_X() * sd, u.DE_X() * sd);
                 }

@@ -20,6 +20,7 @@ void Riemann::Avg(const Fluid_Dyn_Pars *left_p,
     center_p->V.X = 0.5 * (left_p->V.X + right_p->V.X);
     center_p->V.X = 0.5 * (left_p->V.Y + right_p->V.Y);
     center_p->V.X = 0.5 * (left_p->V.Z + right_p->V.Z);
+    center_p->E = 0.5 * (left_p->E + right_p->E);
     center_p->P = 0.5 * (left_p->P + right_p->P);
 }
 

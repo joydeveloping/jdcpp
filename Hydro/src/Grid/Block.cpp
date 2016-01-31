@@ -452,7 +452,7 @@ void Block::Create_Solid_Descartes(double i_real_size,
                 Cell *c_p = Get_Cell(i, j, k);
                 Fluid_Dyn_Pars *fdp_p = &c_p->U[cur];
 
-                fdp_p->R = 1.225;
+                fdp_p->R = (i == 0) ? 1.0 : 1.225;
                 fdp_p->V.X = 0.0;
                 fdp_p->V.Y = 0.0;
                 fdp_p->V.Z = 0.0;

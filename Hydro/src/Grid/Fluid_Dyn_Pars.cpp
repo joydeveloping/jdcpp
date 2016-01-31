@@ -166,5 +166,29 @@ void Fluid_Dyn_Pars::Flow_To_Z(Fluid_Dyn_Pars &fdp,
     fdp.Flow_Z(dr, dv, de);
 }
 
+/*
+ * Print information.
+ */
+
+/**
+ * \brief Print info.
+ *
+ * \param[in] os - stream
+ * \param[in] p - parameters to print
+ *
+ * \return
+ * Stream.
+ */
+ostream &operator<<(ostream &os,
+                    const Fluid_Dyn_Pars *p)
+{
+    os << "R = " << setw(10) << p->R
+       << " Vx = " << setw(10) << p->V.X
+       << " Vy = " << setw(10) << p->V.Y
+       << " Vz = " << setw(10) << p->V.Z
+       << " E = " << setw(10) << p->E
+       << " P = " << setw(10) << p->P << endl;
+}
+
 } }
 
