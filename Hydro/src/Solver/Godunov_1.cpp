@@ -25,6 +25,21 @@ Godunov_1::Godunov_1(Hydro::Grid::Grid *g_p)
  */
 
 /**
+ * \brief Iterations calculation.
+ *
+ * \param[in] count - iterations count
+ * \param[in] dt - time step
+ */
+void Godunov_1::Calc_Iters(int count,
+                           double dt)
+{
+    for (int i = 0; i < count; i++)
+    {
+        Calc_Iter(dt);
+    }
+}
+
+/**
  * \brief Iteration calculation.
  *
  * \param[in] dt - time step
@@ -61,7 +76,6 @@ void Godunov_1::Calc_Iter(Block *b_p,
     Fluid_Dyn_Pars u;
     Cell *c1_p = NULL;
     Cell *c2_p = NULL;
-    double vo = 0.0;
     double d = 0.0;
     double sd = 0.0;
 
@@ -75,67 +89,117 @@ void Godunov_1::Calc_Iter(Block *b_p,
             for (int k = 0; k < k_size; k++)
             {
                 c1_p = b_p->Get_Cell(i, j, k);
-                vo = c1_p->Vo;
-                d = dt / vo;
+                d = dt / c1_p->Vo;
+
+                // I.
 
                 // I0 direction (x-).
+                sd = c1_p->S[Direction::I0] * d;
                 if (i == 0)
                 {
-                    // Hard border, no flow.
+                    // Hard border.
+
+                    Fluid_Dyn_Pars u2 = c1_p->U[cur];
+
+                    u2.V.X *= -1.0;
+                    Riemann::Avg(&c1_p->U[cur], &u2, &u);
+
+                    c1_p->U[nxt].Flow_X(u.DR_X() * sd, u.DV_X() * sd, u.DE_X() * sd);
                 }
 
                 // I1 direction (x+).
+                sd = c1_p->S[Direction::I1] * d;
                 if (i == i_size - 1)
                 {
-                    // Hard border, no flow.
+                    // Hard border.
+
+                    Fluid_Dyn_Pars u2 = c1_p->U[cur];
+
+                    u2.V.X *= -1.0;
+                    Riemann::Avg(&c1_p->U[cur], &u2, &u);
+
+                    c1_p->U[nxt].Flow_X(-u.DR_X() * sd, -u.DV_X() * sd, -u.DE_X() * sd);
                 }
                 else
                 {
                     c2_p = b_p->Get_Cell(i + 1, j, k);
                     Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
-                    sd = c1_p->S[Direction::I1] * d;
 
                     c1_p->U[nxt].Flow_To_X(c2_p->U[nxt], u.DR_X() * sd, u.DV_X() * sd, u.DE_X() * sd);
                 }
 
+                // J.
+
                 // J0 direction (y-).
+                sd = c1_p->S[Direction::J0] * d;
                 if (j == 0)
                 {
-                    // Hard border, no flow.
+                    // Hard border.
+
+                    Fluid_Dyn_Pars u2 = c1_p->U[cur];
+
+                    u2.V.Y *= -1.0;
+                    Riemann::Avg(&c1_p->U[cur], &u2, &u);
+
+                    c1_p->U[nxt].Flow_Z(u.DR_Y() * sd, u.DV_Y() * sd, u.DE_Y() * sd);
                 }
 
                 // J1 direction (y+).
+                sd = c1_p->S[Direction::J1] * d;
                 if (j == j_size - 1)
                 {
-                    // Hard border, no flow.
+                    // Hard border.
+
+                    Fluid_Dyn_Pars u2 = c1_p->U[cur];
+
+                    u2.V.Y *= -1.0;
+                    Riemann::Avg(&c1_p->U[cur], &u2, &u);
+
+                    c1_p->U[nxt].Flow_Z(-u.DR_Y() * sd, -u.DV_Y() * sd, -u.DE_Y() * sd);
                 }
                 else
                 {
                     c2_p = b_p->Get_Cell(i, j + 1, k);
                     Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
-                    sd = c1_p->S[Direction::J1] * d;
 
                     c1_p->U[nxt].Flow_To_Y(c2_p->U[nxt], u.DR_Y() * sd, u.DV_Y() * sd, u.DE_Y() * sd);
                 }
 
+                // K.
+
                 // K0 direction (z-).
+                sd = c1_p->S[Direction::K0] * d;
                 if (k == 0)
                 {
-                    // Hard border, no flow.
+                    // Hard border.
+
+                    Fluid_Dyn_Pars u2 = c1_p->U[cur];
+
+                    u2.V.Z *= -1.0;
+                    Riemann::Avg(&c1_p->U[cur], &u2, &u);
+
+                    c1_p->U[nxt].Flow_Z(u.DR_Z() * sd, u.DV_Z() * sd, u.DE_Z() * sd);
                 }
 
                 // K1 direction (z+).
+                sd = c1_p->S[Direction::K1] * d;
                 if (k == k_size - 1)
                 {
-                    // Hard border, no flow.
+                    // Hard border.
+
+                    Fluid_Dyn_Pars u2 = c1_p->U[cur];
+
+                    u2.V.Z *= -1.0;
+                    Riemann::Avg(&c1_p->U[cur], &u2, &u);
+
+                    c1_p->U[nxt].Flow_Z(-u.DR_Z() * sd, -u.DV_Z() * sd, -u.DE_Z() * sd);
                 }
                 else
                 {
                     c2_p = b_p->Get_Cell(i, j, k + 1);
                     Riemann::Avg(&c1_p->U[cur], &c2_p->U[cur], &u);
-                    sd = c1_p->S[Direction::K1] * d;
 
-                    c1_p->U[nxt].Flow_To_Y(c2_p->U[nxt], u.DR_Z() * sd, u.DV_Z() * sd, u.DE_Z() * sd);
+                    c1_p->U[nxt].Flow_To_Z(c2_p->U[nxt], u.DR_Z() * sd, u.DV_Z() * sd, u.DE_Z() * sd);
                 }
             }
         }

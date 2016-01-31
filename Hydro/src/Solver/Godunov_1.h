@@ -26,15 +26,19 @@ public:
     Godunov_1(Hydro::Grid::Grid *g_p);
 
 
-    // Iteration.
+    // Iterations.
+    void Calc_Iters(int count,
+                    double dt);
     void Calc_Iter(double dt);
-    void Calc_Iter(Block *b_p,
-                   double dt);
 
 private:
 
     // Grid.
     Hydro::Grid::Grid *G_p_;
+
+    // Iteration for block.
+    void Calc_Iter(Block *b_p,
+                   double dt);
 };
 
 } }
