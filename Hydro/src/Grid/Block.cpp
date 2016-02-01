@@ -97,12 +97,12 @@ void Block::Destroy_Facets()
  * \return
  * Bytes count used for block data.
  */
-int Block::Bytes_Count() const
+long Block::Bytes_Count() const
 {
-    // NX_, NY_, NZ_ - nodes_count
-    // CX_, CY_, CZ_, VX_, VY_, VZ_, T_, Ro_, P_ - cells_count
+    long doubles = (Nodes_Count() * 3
+                   + Cells_Count() * 22);
 
-    return (3 * Nodes_Count() + 9 * Cells_Count()) * sizeof(double);
+    return doubles * sizeof(double);
 }
 
 /**

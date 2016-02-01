@@ -59,7 +59,7 @@ public:
     int J_Nodes() const { return J_Size() + 1; }
     int K_Nodes() const { return K_Size() + 1; }
     int Nodes_Count() const { return I_Nodes() * J_Nodes() * K_Nodes(); }
-    int Bytes_Count() const;
+    long Bytes_Count() const;
     int Facet_Size(int direction) const { return Facets_p_[direction]->Size(); }
     int Surface_Area() const;
     int Iface_Cells_Count() const;

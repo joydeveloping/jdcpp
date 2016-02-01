@@ -141,7 +141,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     u2.V.Y *= -1.0;
                     Riemann::Avg(&c1_p->U[cur], &u2, &u);
 
-                    c1_p->U[nxt].Flow_Z(-u.DR_Y() * sd, -u.DV_Y() * sd, -u.DE_Y() * sd);
+                    c1_p->U[nxt].Flow_Y(-u.DR_Y() * sd, -u.DV_Y() * sd, -u.DE_Y() * sd);
                 }
 
                 // J1 direction (y+).
@@ -155,7 +155,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
                     u2.V.Y *= -1.0;
                     Riemann::Avg(&c1_p->U[cur], &u2, &u);
 
-                    c1_p->U[nxt].Flow_Z(u.DR_Y() * sd, u.DV_Y() * sd, u.DE_Y() * sd);
+                    c1_p->U[nxt].Flow_Y(u.DR_Y() * sd, u.DV_Y() * sd, u.DE_Y() * sd);
                 }
                 else
                 {

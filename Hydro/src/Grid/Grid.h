@@ -36,6 +36,7 @@ public:
     Block *Get_Block(int n) const;
     Iface *Get_Iface(int n) const;
     int Cells_Count() const;
+    long Bytes_Count() const;
     int Iface_Cells_Count() const;
     int Shadow_Cells_Count() const;
     int Inner_Cells_Count() const;

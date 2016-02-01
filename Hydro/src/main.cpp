@@ -56,11 +56,12 @@ int Run(int ranks_count,
  */
 int Run_Solid_Descartes()
 {
+    cout << "Run_Solid_Descartes" << endl;
     Grid *grid_p = new Grid();
     Godunov_1 *calculation_p = new Godunov_1(grid_p);
 
-    grid_p->Create_Solid_Descartes(10, 1, 1, 1.0, 1.0, 1.0);
-    calculation_p->Calc_Iters(1, 0.01);
+    grid_p->Create_Solid_Descartes(1000, 1000, 1, 1.0, 1.0, 1.0);
+    calculation_p->Calc_Iters(10, 0.00001);
 
     // Print out.
     grid_p->Print_Statistics();
@@ -68,8 +69,6 @@ int Run_Solid_Descartes()
     // Print block info.
     while (true)
     {
-        calculation_p->Calc_Iters(100, 0.0001);
-
         Block *b_p = grid_p->Get_Block(0);
         int lay = grid_p->Layer();
 
@@ -121,7 +120,9 @@ int Run_Solid_Descartes()
         cout << "------------------------------------------------------------------------"
              << "------------------------------------------" << endl;
 
-        char c = getc(stdin);
+        //char c = getc(stdin);
+
+        break;
     }
 
     delete grid_p;

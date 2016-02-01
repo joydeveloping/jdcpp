@@ -103,6 +103,24 @@ int Grid::Cells_Count() const
 }
 
 /**
+ * \brief Get bytes count.
+ *
+ * \return
+ * Count of bytes.
+ */
+long Grid::Bytes_Count() const
+{
+    long c = 0;
+
+    for (int i = 0; i < Blocks_Count(); i++)
+    {
+        c += Get_Block(i)->Bytes_Count();
+    }
+
+    return c;
+}
+
+/**
  * \brief Get interface cells count.
  *
  * \return
@@ -773,6 +791,7 @@ void Grid::Print_Statistics(ostream &os)
     os << "  Blocks Count         : " << setw(8) << Blocks_Count() << endl;
     os << "  Ifaces Count         : " << setw(8) << Ifaces_Count() << endl;
     os << "  Cells Count          : " << setw(8) << cc << endl;
+    os << "  MBytes Count         : " << setw(8) << Bytes_Count() / (1024 * 1024) << endl;
     os << "  Inner Cells Count    : " << setw(8) << icc << endl;
     os << "  Inner Cells Percent  : " << setw(8) << setprecision(2) << fixed
                                       << (100.0 * icc / cc) << " %" << endl;
