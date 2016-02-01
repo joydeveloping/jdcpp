@@ -60,13 +60,16 @@ int Run_Solid_Descartes()
     Godunov_1 *calculation_p = new Godunov_1(grid_p);
 
     grid_p->Create_Solid_Descartes(10, 1, 1, 1.0, 1.0, 1.0);
-    calculation_p->Calc_Iters(2, 0.001);
+    calculation_p->Calc_Iters(1, 0.01);
 
     // Print out.
     grid_p->Print_Statistics();
 
     // Print block info.
+    while (true)
     {
+        calculation_p->Calc_Iters(100, 0.0001);
+
         Block *b_p = grid_p->Get_Block(0);
         int lay = grid_p->Layer();
 
@@ -74,42 +77,42 @@ int Run_Solid_Descartes()
              << "------------------------------------------" << endl;
 
         cout << "Ro :";
-        for (int i = 0; i < b_p->Cells_Count(); i++)
+        for (int i = 0; i < 10; i++)
         {
             cout << " " << setw(10) << b_p->Cells[i].U[lay].R;
         }
         cout << endl;
 
         cout << "Vx :";
-        for (int i = 0; i < b_p->Cells_Count(); i++)
+        for (int i = 0; i < 10; i++)
         {
             cout << " " << setw(10) << b_p->Cells[i].U[lay].V.X;
         }
         cout << endl;
 
         cout << "Vy :";
-        for (int i = 0; i < b_p->Cells_Count(); i++)
+        for (int i = 0; i < 10; i++)
         {
             cout << " " << setw(10) << b_p->Cells[i].U[lay].V.Y;
         }
         cout << endl;
 
         cout << "Vz :";
-        for (int i = 0; i < b_p->Cells_Count(); i++)
+        for (int i = 0; i < 10; i++)
         {
             cout << " " << setw(10) << b_p->Cells[i].U[lay].V.Z;
         }
         cout << endl;
 
         cout << "E  :";
-        for (int i = 0; i < b_p->Cells_Count(); i++)
+        for (int i = 0; i < 10; i++)
         {
             cout << " " << setw(10) << b_p->Cells[i].U[lay].E;
         }
         cout << endl;
 
         cout << "P  :";
-        for (int i = 0; i < b_p->Cells_Count(); i++)
+        for (int i = 0; i < 10; i++)
         {
             cout << " " << setw(10) << b_p->Cells[i].U[lay].P;
         }
@@ -117,6 +120,8 @@ int Run_Solid_Descartes()
 
         cout << "------------------------------------------------------------------------"
              << "------------------------------------------" << endl;
+
+        char c = getc(stdin);
     }
 
     delete grid_p;

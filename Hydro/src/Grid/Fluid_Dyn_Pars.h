@@ -23,6 +23,9 @@ class Fluid_Dyn_Pars
 
 public:
 
+    // Gamma from condition equation.
+    static const double Gamma = 1.4;
+
     /*
      * Data (not private because class it is just data container).
      */
@@ -50,6 +53,30 @@ public:
     // Constructors/destructors.
     Fluid_Dyn_Pars();
     Fluid_Dyn_Pars(const Fluid_Dyn_Pars &fdp);
+
+    // Init.
+    double Calc_R() const { return P / ((Gamma - 1.0) * E); }
+    double Calc_E() const { return P / ((Gamma - 1.0) * R); }
+    double Calc_P() const { return (Gamma - 1.0) * R * E; }
+    void Set_V(double vx, double vy, double vz) { V.X = vx; V.Y = vy; V.Z = vz; }
+    void Set_RE(double r, double e) { R = r; E = e; P = Calc_P(); }
+    void Set_RP(double r, double p) { R = r; P = p; E = Calc_E(); }
+    void Set_EP(double e, double p) { E = e; P = p; R = Calc_R(); }
+    void Set_RVE(double r,
+                 double vx,
+                 double vy,
+                 double vz,
+                 double e) { Set_V(vx, vy, vz); Set_RE(r, e); }
+    void Set_RVP(double r,
+                 double vx,
+                 double vy,
+                 double vz,
+                 double p) { Set_V(vx, vy, vz); Set_RP(r, p); }
+    void Set_VEP(double vx,
+                 double vy,
+                 double vz,
+                 double e,
+                 double p) { Set_V(vx, vy, vz); Set_EP(e, p); }
 
     // Forms: normal <-> expand.
     void Normal_To_Expand();

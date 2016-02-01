@@ -452,12 +452,12 @@ void Block::Create_Solid_Descartes(double i_real_size,
                 Cell *c_p = Get_Cell(i, j, k);
                 Fluid_Dyn_Pars &u = c_p->U[cur];
 
-                u.R = (i == 0) ? 1.0 : 1.225;
-                u.V.X = 0.0;
-                u.V.Y = 0.0;
-                u.V.Z = 0.0;
-                u.P = 101325.0;
-                u.E = (1.0 / (1.4 - 1.0)) * u.P / u.R;
+                u.Set_RVP(1.225, 0.0, 0.0, 0.0, 1.0);
+
+                if ((i == 4) || (i == 5))
+                {
+                    u.Set_RP(u.R * 1.2, u.P * 1.2);
+                }
             }
         }
     }

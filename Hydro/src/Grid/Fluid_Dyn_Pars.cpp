@@ -57,10 +57,7 @@ void Fluid_Dyn_Pars::Expand_To_Normal()
 {
     V /= R;
     E = E / R - 0.5 * V.Mod_2();
-
-    // TODO:
-    // Remove.
-    P = (1.4 - 1.0) * R * E;
+    P = Calc_P();
 }
 
 /*
