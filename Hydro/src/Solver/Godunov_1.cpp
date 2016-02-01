@@ -7,6 +7,7 @@
 
 #include "Godunov_1.h"
 #include "Riemann.h"
+#include "Lib/OMP/omp.h"
 
 namespace Hydro { namespace Solver {
 
@@ -73,23 +74,22 @@ void Godunov_1::Calc_Iter(Block *b_p,
     int k_size = b_p->K_Size();
     int cur = b_p->Get_Grid()->Layer();
     int nxt = cur ^ 1;
-    Fluid_Dyn_Pars u;
-    Cell *c1_p = NULL;
-    Cell *c2_p = NULL;
-    double d = 0.0;
-    double sd = 0.0;
 
     b_p->Copy_Cur_Layer_To_Nxt();
     b_p->Nxt_Normal_To_Expand();
 
+    #pragma omp parallel num_threads(NTHREADS)
     for (int i = 0; i < i_size; i++)
     {
         for (int j = 0; j < j_size; j++)
         {
             for (int k = 0; k < k_size; k++)
             {
-                c1_p = b_p->Get_Cell(i, j, k);
-                d = dt / c1_p->Vo;
+                Cell *c1_p = b_p->Get_Cell(i, j, k);
+                Cell *c2_p = NULL;
+                Fluid_Dyn_Pars u;
+                double sd = 0.0;
+                double d = dt / c1_p->Vo;
 
                 // I.
 
