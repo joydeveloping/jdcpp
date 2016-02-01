@@ -11,11 +11,6 @@
 #include <omp.h>
 #include "Timer.h"
 
-/**
- * \brief Number of threads.
- */
-#define NTHREADS 1
-
 namespace Lib { namespace OMP {
 
 } }

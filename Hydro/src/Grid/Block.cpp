@@ -472,7 +472,7 @@ void Block::Copy_Cur_Layer_To_Nxt()
     int cur = Get_Grid()->Layer();
     int nxt = cur ^ 1;
 
-    #pragma omp parallel num_threads(NTHREADS)
+    #pragma omp parallel for
     for (int i = 0; i < Cells_Count(); i++)
     {
         Cell *c_p = &Cells[i];
@@ -489,7 +489,7 @@ void Block::Nxt_Normal_To_Expand()
     int cur = Get_Grid()->Layer();
     int nxt = cur ^ 1;
 
-    #pragma omp parallel num_threads(NTHREADS)
+    #pragma omp parallel for
     for (int i = 0; i < Cells_Count(); i++)
     {
         Cells[i].U[nxt].Normal_To_Expand();
@@ -505,7 +505,7 @@ void Block::Nxt_Expand_To_Normal()
     int cur = Get_Grid()->Layer();
     int nxt = cur ^ 1;
 
-    #pragma omp parallel num_threads(NTHREADS)
+    #pragma omp parallel for
     for (int i = 0; i < Cells_Count(); i++)
     {
         Cells[i].U[nxt].Expand_To_Normal();

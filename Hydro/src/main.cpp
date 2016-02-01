@@ -9,6 +9,7 @@
 #include "Lib/OMP/omp.h"
 #include "Grid/Grid.h"
 #include "Solver/Godunov_1.h"
+#include <stdlib.h>
 
 /**
  * \brief Name of grid.
@@ -55,8 +56,9 @@ int Run(int ranks_count,
 /**
  * \brief Run solid descartes test.
  */
-int Run_Solid_Descartes()
+int Run_Solid_Descartes(int nth)
 {
+    omp_set_num_threads(nth);
     cout << "Run_Solid_Descartes : max threads = " << omp_get_max_threads() << endl;
     Grid *grid_p = new Grid();
     Godunov_1 *calculation_p = new Godunov_1(grid_p);
@@ -143,7 +145,7 @@ int Run_Solid_Descartes()
 int main(int argc, char **argv)
 {
     MPI_Init(&argc, &argv);
-    Run_Solid_Descartes();
+    Run_Solid_Descartes(atoi(argv[1]));
     MPI_Finalize();
 
     return 0;

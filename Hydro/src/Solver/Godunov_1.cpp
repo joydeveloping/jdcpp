@@ -78,7 +78,7 @@ void Godunov_1::Calc_Iter(Block *b_p,
     b_p->Copy_Cur_Layer_To_Nxt();
     b_p->Nxt_Normal_To_Expand();
 
-    #pragma omp parallel num_threads(NTHREADS)
+    #pragma omp parallel for
     for (int i = 0; i < i_size; i++)
     {
         for (int j = 0; j < j_size; j++)
